@@ -1,0 +1,1047 @@
+---
+title: "Corona prepping using Finnish data CIBER"
+author: "James Twose, Gjalt-Jorn Peters, Kaisa Sauro, Matti Heino & Nelli Hankonen"
+date: "`r format(Sys.time(), '%H:%M:%S on %Y-%m-%d %Z (UTC%z)')`"
+output:
+  html_document:
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+Main question: at this point we're interested in one single classification, i.e. what predicts whether people do maskless contacts with non-householders
+
+[Research Document](https://docs.google.com/document/d/1iLciHcvVvf8QwFS7wiyNBevpD1B9yDRqMlM4_oCcVcA/edit?usp=sharing)
+
+[Questions codebook](https://docs.google.com/document/d/1YZVCP1UNxnNLAK2kYDfA9Y98leTZYurZD-d8iByhdi0/edit?usp=sharing)
+
+[Method of delivery](https://docs.google.com/document/d/1G1JT9JUJrTK3aaXXuRawYACJaGNxU7mcXL9i-d8eKXY/edit)
+
+[Question labels](https://docs.google.com/spreadsheets/d/1BEX4W8XRGnuDk4Asa_pdKij3EIZBvhSPqHxFrDjM07k/edit#gid=935884211)
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# Setup {.tabset .tabset-pills}
+
+## Overview
+
+See the "Code and logs" tab for, well, the code and logs.
+
+## Code and logs
+
+```{r, check-packages, echo=FALSE, message=FALSE}
+
+###-----------------------------------------------------------------------------
+### I normally use 'ufs' for lots of small little functions including
+### 'checkPkgs' which allows you to check for the presence of a package
+### without loading it - this enforces use of the pkg::fun syntax, which
+### is a bit safer (given that names are only unique within their namespace)
+### and convenient if you end up writing a function you then port to a package
+### (where you always use the :: operator for the former reason).
+###-----------------------------------------------------------------------------
+
+if (!('ufs' %in% installed.packages()[, 'Package'])) {
+  install.packages("ufs");
+}
+
+ufs::checkPkgs("here");                  ### For relative paths
+ufs::checkPkgs("googlesheets4");         ### For reading from Google Sheets
+ufs::checkPkgs("openxlsx");              ### Reading/writing XLSX
+ufs::checkPkgs("behaviorchange");        ### For the CIBER plots
+ufs::checkPkgs("ggbeeswarm");            ### For beeswarms
+
+### Potentially install dev version of behaviorchange
+# ufs::quietGitLabUpdate("r-packages/behaviorchange@dev", quiet = FALSE);
+
+###-----------------------------------------------------------------------------
+### Packages to attach to the search path
+###-----------------------------------------------------------------------------
+
+# library(ggplot2)
+# # library(parsnip)
+# library(magrittr)
+# library(dplyr)
+# library(faux)
+# library(DataExplorer)
+# # library(caret)
+# # library(randomForest)
+# library(tidyr)
+# # library(cvms)
+# library(doParallel)
+# # library(rattle)
+# # library(rpart)
+# source("coronapreppers_extras.R")
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, set-paths-and-urls}
+
+###-----------------------------------------------------------------------------
+### Setting paths and datafile name
+###-----------------------------------------------------------------------------
+
+basePath <- here::here();
+
+dataPath <- file.path(basePath, "data");
+figureDataPath <- file.path(basePath, "figure_data");
+metadataPath <- file.path(basePath, "metadata");
+outputPath <- file.path(basePath, "images");
+
+dataFilename <- "shield_gjames_21-09-20.csv";
+
+###-----------------------------------------------------------------------------
+### Setting URLs and column names
+###-----------------------------------------------------------------------------
+
+questionLabels_sheetURL <-
+  "https://docs.google.com/spreadsheets/d/1BEX4W8XRGnuDk4Asa_pdKij3EIZBvhSPqHxFrDjM07k";
+
+questionLabels_varNameCol <- "New variable name";
+questionLabels_leftAnchorCol <- "English lo-anchor";
+questionLabels_rightAnchorCol <- "English hi-anchor";
+questionLabels_labelCol <- "Label short"; # "Label";
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, load-data}
+
+###-----------------------------------------------------------------------------
+### Load data
+###-----------------------------------------------------------------------------
+
+#df <- read.csv("data/shield_gjames_21-06-10.csv")
+
+### James: refactored a bit using paths defined above and to
+### make this platform-independent
+df <- df.raw <- read.csv(
+  file.path(
+    dataPath,
+    dataFilename
+  )
+);
+
+###-----------------------------------------------------------------------------
+### Create new composite measure of intention and behavior
+###-----------------------------------------------------------------------------
+
+intentionVars <-
+  grep("^intention_", names(df), value=TRUE);
+
+### Note: intention response options are:
+###   1 = I will wear a mask all the time
+###   2 = I'm going to wear a mask part of the time
+###   3 = I'm not going to wear a mask
+###   4 = I'm not going to go at all
+###
+### We recode these so that the new categories reflect the
+### risk due to potential unmasked exposure to SARS-CoV-2:
+###   1 -> 0
+###   2 -> 1
+###   3 -> 2
+###   4 -> 0
+
+for (currentIntentionVar in intentionVars) {
+  df[, paste0(currentIntentionVar, "_recoded")] <-
+    ifelse(
+      df[, currentIntentionVar] == 4,
+      0,
+      df[, currentIntentionVar] - 1
+    );
+}
+
+df$intention_composite <-
+  rowSums(df[, paste0(intentionVars, "_recoded")]);
+
+### Behavior
+
+behaviorVars <-
+  grep("^behaviour_", names(df), value=TRUE);
+
+behaviorVars_selected <-
+  grep("indoors|unmasked", behaviorVars, value=TRUE);
+
+### For these two behavior measures, the response
+### options are different:
+###
+###   behaviour_indoors_nonhouseholders:
+###     1 = Several times a day
+###     2 = Every day
+###     3 = 5-6 days
+###     4 = 3-4 days
+###     5 = 1-2 days
+###     6 = Not at all
+###
+###   behaviour_unmasked:
+###     1 = Every day
+###     5-6 days
+###     3-4 days
+###     1-2 days
+###     not at all
+###
+### These are recoded to ~ represent, respectively,
+### 'mask wearing opportunities' and 'risk events'.
+
+maskWearingOpportunities_recodingVector <-
+  c(14/7, 1, 5.5/7, 3.5/7, 1.5/7, 0);
+
+df[, paste0(behaviorVars_selected[1], "_recoded")] <-
+  maskWearingOpportunities_recodingVector[
+    df[, behaviorVars_selected[1]]
+  ];
+
+riskEvents_recodingVector <-
+  c(1, 5.5/7, 3.5/7, 1.5/7, 0);
+
+df[, paste0(behaviorVars_selected[2], "_recoded")] <-
+  riskEvents_recodingVector[
+    df[, behaviorVars_selected[2]]
+  ];
+
+df$behavior_composite <-
+  df[, paste0(behaviorVars_selected[1], "_recoded")] *
+  df[, paste0(behaviorVars_selected[2], "_recoded")];
+
+df$behavior_composite_recoded <-
+  df$behavior_composite * 5;
+
+df$intention_behavior_composite <-
+  rowMeans(
+    df[,
+       c('intention_composite',
+         'behavior_composite_recoded')
+      ],
+    na.rm = TRUE);
+
+### Invert the final measure so that higher scores represent the desirable
+### behavior instead of the other way around.
+df$intention_behavior_composite <-
+  max(df$intention_behavior_composite, na.rm=TRUE) - 
+  df$intention_behavior_composite;
+
+###-----------------------------------------------------------------------------
+### We now have two variables: a behavior composite that represents in which
+### proportion of the situations where mask-wearing was the desirable behavior
+### participants wore masks; and an intention-behavior composite, where this
+### variable is averaged with intention.
+###-----------------------------------------------------------------------------
+
+### Use regular expressions to select variables:
+###  - the | means "or";
+###  - the ^ means "start of the text string"
+
+determinantVars <- list(
+  continuous =
+    grep(
+      
+      ### We don't want intention as a determinant
+      ### Also, leave out the SDT items because they're part of
+      ### another study, and not easy to interpret as determinants
+      ### as thet may measure two things.
+      #   "^intention|^automaticity|attitude|^norms|^risk|^effective|^sdt",
+      
+      "^automaticity|attitude|^norms|^risk|^effective",
+      
+      names(df),
+      value=TRUE
+    ),
+  dichotomous =
+    grep(
+      "barriers",
+      names(df),
+      value=TRUE
+    )
+);
+
+### Superseded
+#behaviorVarName <- "behaviour_unmasked";
+
+### Using the new composite behavior measure
+behaviorVarName <- "intention_behavior_composite";
+
+#behaviorVarName_dichotomized <- "behaviour_unmasked_bool"; ### Redundant now
+#
+### Create dichotomized behavior measure
+# df[, behaviorVarName_dichotomized] <-
+#   ifelse(df[, behaviorVarName] < 5,
+#          0,
+#          1);
+
+### Verify that
+# table(df[, behaviorVarName],
+#       df[, behaviorVarName_dichotomized]);
+
+###-----------------------------------------------------------------------------
+### Create factors for age and education
+###-----------------------------------------------------------------------------
+
+df$demographic_educationType <-
+  ifelse(
+    df$demographic_higher_education,
+    "Theoretical",
+    "Practical"
+  );
+
+df$demographic_educationType <-
+  factor(
+    df$demographic_educationType,
+    levels = c("Practical", "Theoretical"),
+    labels = c("Practical", "Theoretical"),
+    ordered = TRUE
+  );
+
+ageRecodingVector <-
+  c("18-29" = "Younger than 40",
+    "30-39" = "Younger than 40",
+    "40-49" = "40 to 59",
+    "50-59" = "40 to 59",
+    "60+" = "60 or older");
+
+df$demographic_ageGroups <-
+  ageRecodingVector[
+    df$demographic_age
+  ];
+
+df$demographic_ageGroups <-
+  factor(
+    df$demographic_ageGroups,
+    levels = unique(ageRecodingVector),
+    labels = unique(ageRecodingVector),
+    ordered=TRUE
+  );
+
+### Verify recoding
+
+table(df$demographic_higher_education,
+      df$demographic_educationType);
+
+table(df$demographic_age,
+      df$demographic_ageGroups);
+
+### For convenience later on
+ageGroups <- levels(df$demographic_ageGroups);
+eduGroups <- levels(df$demographic_educationType);
+
+###-----------------------------------------------------------------------------
+### Export processed data
+###-----------------------------------------------------------------------------
+
+write.csv(
+  df,
+  file = file.path(
+    dataPath,
+    "data--preprocessed-for-CIBER.csv"
+  )
+);
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, load-labels}
+
+###-----------------------------------------------------------------------------
+### Load labels, store local backup, prepare vectors
+###-----------------------------------------------------------------------------
+
+questionLabels_localBackupFilename <-
+  file.path(metadataPath, "questionLabels.xlsx");
+
+### Use tryCatch in case we're offline
+tryCatch({
+  
+  googlesheets4::gs4_deauth();
+  
+  questionLabelDf <-
+    as.data.frame(
+      googlesheets4::read_sheet(questionLabels_sheetURL)
+    );
+  
+  ### Store local backup in case we're offline next time and so that it
+  ### gets archived along with the rest if we freeze an OSF registration
+  openxlsx::write.xlsx(
+    questionLabelDf,
+    questionLabels_localBackupFilename
+  );
+  
+}, error = function(e) {
+  
+  ### We're probably offline; try reading local copy, otherwise throw error
+  if (file.exists(questionLabels_localBackupFilename)) {
+    questionLabelDf <-
+      openxlsx::read.xlsx(
+        questionLabels_localBackupFilename
+      );
+  } else {
+    stop("I cannot read the google sheet with the question labels, nor ",
+         "do I manage to read the spreadsheet from the local backup file.");
+  }
+  
+});
+
+###-----------------------------------------------------------------------------
+### Create vectors
+###-----------------------------------------------------------------------------
+
+questionLabels <-
+  stats::setNames(
+    questionLabelDf[, questionLabels_labelCol],
+    nm = questionLabelDf[, questionLabels_varNameCol]
+  );
+
+leftAnchors <-
+  stats::setNames(
+    questionLabelDf[, questionLabels_leftAnchorCol],
+    nm = questionLabelDf[, questionLabels_varNameCol]
+  );
+
+rightAnchors <-
+  stats::setNames(
+    questionLabelDf[, questionLabels_rightAnchorCol],
+    nm = questionLabelDf[, questionLabels_varNameCol]
+  );
+
+###-----------------------------------------------------------------------------
+### Wrap vectors with labels
+###-----------------------------------------------------------------------------
+
+questionLabel_maxWidth <- 40;
+anchors_maxWidth <- 20;
+
+wrapVector <- function(x, width) {
+  res <-
+    unlist(
+      lapply(
+        strwrap(x, width = width, simplify = FALSE),
+        paste,
+        collapse = "\n"
+      )
+    );
+  names(res) <- names(x);
+  return(res);
+}
+
+questionLabels_wrapped <-
+  wrapVector(questionLabels, questionLabel_maxWidth);
+
+# questionLabels_wrapped <- questionLabels <-
+#   stats::setNames(determinantVars$continuous,
+#                   nm=determinantVars$continuous);
+
+leftAnchors_wrapped <-
+  wrapVector(leftAnchors, anchors_maxWidth);
+
+rightAnchors_wrapped <-
+  wrapVector(rightAnchors, anchors_maxWidth);
+
+fullLabels <-
+  stats::setNames(
+    wrapVector(
+      paste0(
+        questionLabels,
+        " [ ",
+        leftAnchors[names(questionLabels)],
+        " | ",
+        rightAnchors[names(questionLabels)],
+        " ]"
+      ),
+      questionLabel_maxWidth
+    ),
+    nm = names(questionLabels)
+  );
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, set-parameters, eval=FALSE}
+
+###-----------------------------------------------------------------------------
+### Setting parameters (e.g. settings for the script etc)
+###-----------------------------------------------------------------------------
+
+grouping_var <- behaviorVarName
+# feature_list <- colnames(df[, !(names(df) %in% c(grouping_var, "id"))])
+feature_list <- c('intention_indoor_meeting', 'norms_people_present_indoors',
+       'sdt_motivation_extrinsic_2', 'sdt_motivation_identified_4', 'norms_family_friends', 'norms_risk_groups', 'norms_officials',
+       'norms_people_present_indoors')
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, eval=FALSE}
+
+### James; deactivated this for now as this also happens just after the data
+### were loaded. I assume this was a left-over from another script (like the
+### 'commented out' loading of packages at the top), which also explains the
+### approach that was chosen? Or maybe that's because this is Python-thinking
+### expressed in R? :-)
+
+if (grouping_var == "behaviour_unmasked") {
+  # df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 'bad', 'good'))
+  df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 0, 1))
+
+  names(df)[names(df) == 'tmp'] <- paste0(grouping_var, "_bool")
+}
+    
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!-- At this point, we're done with the set-up                               -->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r}
+# df[, paste0(grouping_var, "_bool")] <- as.factor(df[, paste0(grouping_var, "_bool")])
+```
+
+```{r, eval=FALSE}
+# df %<>%
+#        mutate_each_(funs(factor(.)), colnames(df))
+# str(df)
+
+# ordinal_vars_mydata <- ordering_lookup %>% 
+#   dplyr::filter(varname %in% names(df)) %>% 
+#   dplyr::filter(ordering == "ordered")
+#   
+# df <- df %>% 
+#   # Ordered variables as ordinal factors
+#   dplyr::mutate(across(.cols = ordinal_vars_mydata$varname, 
+#                         ~factor(., ordered = TRUE))) %>% 
+#   # Everything else as unordered factors
+#   dplyr::mutate(across(.cols = -ordinal_vars_mydata$varname, 
+#                         ~factor(.))) %>% 
+#   # Fix ordering in the intention variables
+#   dplyr::mutate(across(.cols = contains("intention_"), 
+#                         ~dplyr::recode_factor(.,
+#                                               "1" = "4",
+#                                               "2" = "1", 
+#                                               "3" = "2",
+#                                               "4" = "3",
+#                                               .ordered = TRUE)))
+
+str(df)
+
+###-----------------------------------------------------------------------------
+### @James: maybe use the fact that we already depend on dplyr anyway and use
+### dplyr::glimpse here, instead of str?
+###-----------------------------------------------------------------------------
+
+```
+
+```{r, fig.height=15, fig.width=15, eval=FALSE}
+# Exploratory data analysis
+plot_intro(df)
+plot_bar(df)
+plot_correlation(df)
+```
+
+
+```{r, eval=FALSE}
+head(df[, c(paste0(grouping_var, "_bool"), grouping_var)])
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# CIBER plots {.tabset .tabset-pills}
+
+## Full sample
+
+```{r, CIBER-behavior-full-sample}
+
+### No longer necessary, set-up now happens above and distinguishes
+### continuous and dichotomous variables
+
+# tmp <- df %>%
+#   select(-behaviour_unmasked_bool, -behaviour_unmasked, -id, -demographic_age) %>%
+#   as.data.frame()
+# 
+# determinants_list <- colnames(tmp)
+
+### Rescale variables to 0-1 --- note that the way this is done now
+### assumes that the scale max is observed at least once. If that
+### assumption doesn't hold, we may want to extract the scale max
+### values from the google sheet with the labels.
+df[, determinantVars$continuous] <-
+  lapply(
+    df[, determinantVars$continuous],
+    function(x) {
+      return((x - 1) / (max(x, na.rm=TRUE) - 1));
+    }
+  );
+
+ciberJitterWidth <- floor(100*1/7) / 100;
+
+CIBERplots <- list();
+
+CIBERplots$fullSample <-
+  behaviorchange::CIBER(
+    data=df,
+    determinants = determinantVars$continuous,
+    targets = behaviorVarName,
+    orderBy = behaviorVarName,
+    titleVarLabels = stats::setNames("mask wearing", nm=behaviorVarName),
+    titleSuffix = "(full sample)",
+    subQuestions = questionLabels_wrapped[determinantVars$continuous],
+    leftAnchors = leftAnchors_wrapped[determinantVars$continuous],
+    rightAnchors = rightAnchors_wrapped[determinantVars$continuous],
+    jitterWidth = ciberJitterWidth,
+    drawPlot = FALSE,
+    returnPlotOnly = FALSE
+  );
+
+ufs::knitAndSave(
+  CIBERplots$fullSample$output$plot,
+  figCaption = paste0("CIBER plot for the full sample."),
+  path = outputPath,
+  figWidth = attr(CIBERplots$fullSample$output$plot, "width"),
+  figHeight = attr(CIBERplots$fullSample$output$plot, "height"),
+);
+
+```
+
+```{r, CIBER-behavior-per-subgroup, results="asis"}
+
+### Age
+
+for (currentAgeGroup in levels(df$demographic_ageGroups)) {
+  
+  ufs::heading(currentAgeGroup,
+               headingLevel = 2);
+
+  CIBERplots[[currentAgeGroup]] <-
+    behaviorchange::CIBER(
+      data = df[df$demographic_ageGroups == currentAgeGroup, ],
+      determinants = determinantVars$continuous,
+      targets = behaviorVarName,
+      orderBy = behaviorVarName,
+      titleVarLabels = stats::setNames("mask wearing", nm=behaviorVarName),
+      titleSuffix = paste0("(", currentAgeGroup, ")"),
+      subQuestions = questionLabels_wrapped[determinantVars$continuous],
+      leftAnchors = leftAnchors_wrapped[determinantVars$continuous],
+      rightAnchors = rightAnchors_wrapped[determinantVars$continuous],
+      jitterWidth = ciberJitterWidth,
+      drawPlot = FALSE,
+      returnPlotOnly = FALSE
+    );
+
+  ### Use `cat` as R inhibits output in for-loops
+  cat(
+    ufs::knitAndSave(
+      CIBERplots[[currentAgeGroup]]$output$plot,
+      figCaption = paste0("CIBER plot for age group: ", currentAgeGroup, "."),
+      path = outputPath,
+      figWidth = attr(CIBERplots[[currentAgeGroup]]$output$plot, "width"),
+      figHeight = attr(CIBERplots[[currentAgeGroup]]$output$plot, "height"),
+    )
+  );
+  
+}
+
+### Education
+
+for (currentEduGroup in levels(df$demographic_educationType)) {
+    
+  ufs::heading(currentEduGroup,
+               headingLevel = 2);
+
+  CIBERplots[[currentEduGroup]] <-
+    behaviorchange::CIBER(
+      data = df[df$demographic_educationType == currentEduGroup, ],
+      determinants = determinantVars$continuous,
+      targets = behaviorVarName,
+      orderBy = behaviorVarName,
+      titleVarLabels = stats::setNames("mask wearing", nm=behaviorVarName),
+      titleSuffix = paste0("(", currentEduGroup, ")"),
+      subQuestions = questionLabels_wrapped[determinantVars$continuous],
+      leftAnchors = leftAnchors_wrapped[determinantVars$continuous],
+      rightAnchors = rightAnchors_wrapped[determinantVars$continuous],
+      jitterWidth = ciberJitterWidth,
+      drawPlot = FALSE,
+      returnPlotOnly = FALSE
+    );
+
+  ### Use `cat` as R inhibits output in for-loops
+  cat(
+    ufs::knitAndSave(
+      CIBERplots[[currentEduGroup]]$output$plot,
+      figCaption = paste0("CIBER plot for education group: ", currentEduGroup, "."),
+      path = outputPath,
+      figWidth = attr(CIBERplots[[currentEduGroup]]$output$plot, "width"),
+      figHeight = attr(CIBERplots[[currentEduGroup]]$output$plot, "height"),
+    )
+  );
+ 
+}
+
+```
+
+```{r, CIBER-dichotomized-behavior, eval=FALSE}
+
+### Chunk set to eval=FALSE since we no longer look at this
+
+# CIBERplots$dichotomized_behavior <-
+#   behaviorchange::CIBER(
+#     data=df,
+#     determinants = determinantVars$continuous,
+#     targets = behaviorVarName_dichotomized,
+#     orderBy = behaviorVarName_dichotomized,
+#     subQuestions = questionLabels_wrapped[determinantVars$continuous],
+#     leftAnchors = leftAnchors_wrapped[determinantVars$continuous],
+#     rightAnchors = rightAnchors_wrapped[determinantVars$continuous],
+#     drawPlot = FALSE
+#   );
+# 
+# ufs::knitAndSave(
+#   CIBERplots$dichotomized_behavior,
+#   figCaption = paste0("CIBER plot for dichotomized behavior measure; ",
+#                       "note that the right-hand panel shows the ",
+#                       "point-biserial correlation, not the ",
+#                       "Pearson correlation."),
+#   path = outputPath,
+#   figWidth = attr(CIBERplots$dichotomized_behavior, "width"),
+#   figHeight = attr(CIBERplots$dichotomized_behavior, "height"),
+# );
+
+### ufs::knitAndSave both knits and, well, saves :-)
+# ggsave("CIBER_plot_boolean.png", dpi = 400)
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# Potential for Change Indices {.tabset .tabset-pills}
+
+Note: until we standardize the scales, these are incomparable, as they use the 'room for improvement' which is scale-dependent (i.e. it will always be smaller for a dichotomous variable).
+
+## Full sample
+
+```{r, potential-for-change-index}
+
+df_standardized <- df;
+
+df_standardized[, determinantVars$continuous] <-
+  lapply(
+    df_standardized[, determinantVars$continuous],
+    function(x) {
+      lowestObservation <- min(x, na.rm = TRUE);
+      highestObservation <- max(x, na.rm = TRUE);
+      return(
+        (x - lowestObservation) / highestObservation
+      );
+    }
+  );
+
+dstList <- list();
+
+dstList$fullSample <-
+  behaviorchange::determinant_selection_table(
+    data=df_standardized,
+    determinants = determinantVars$continuous,
+    determinantLabels =
+      paste0(questionLabels_wrapped[determinantVars$continuous],
+             " [ ",
+             leftAnchors_wrapped[determinantVars$continuous],
+             " | ",
+             rightAnchors_wrapped[determinantVars$continuous],
+             " ]"),
+    target = behaviorVarName,
+    sortBy = 6
+  );
+
+print(dstList$fullSample);
+
+```
+
+```{r, potential-for-change-index-per-subgroup, results="asis"}
+
+### Age
+
+for (currentAgeGroup in levels(df$demographic_ageGroups)) {
+  
+  ufs::heading(currentAgeGroup,
+               headingLevel = 2);
+
+  dstList[[currentAgeGroup]] <-
+    behaviorchange::determinant_selection_table(
+      data=df_standardized[
+        df_standardized$demographic_ageGroups == currentAgeGroup,
+      ],
+      determinants = determinantVars$continuous,
+      determinantLabels =
+        paste0(questionLabels_wrapped[determinantVars$continuous],
+               " [ ",
+               leftAnchors_wrapped[determinantVars$continuous],
+               " | ",
+               rightAnchors_wrapped[determinantVars$continuous],
+               " ]"),
+      target = behaviorVarName,
+      sortBy = 6,
+      headingLevel = 3
+    );
+      
+  print(
+    behaviorchange:::knit_print.determinantSelectionTable(
+      dstList[[currentAgeGroup]],
+      render_preview = FALSE
+    )
+  );
+
+}
+
+### Education
+
+for (currentEduGroup in levels(df$demographic_educationType)) {
+    
+  ufs::heading(currentEduGroup,
+               headingLevel = 2);
+
+  dstList[[currentEduGroup]] <-
+    behaviorchange::determinant_selection_table(
+      data=df_standardized[
+        df_standardized$demographic_educationType == currentEduGroup,
+      ],
+      determinants = determinantVars$continuous,
+      determinantLabels =
+        paste0(questionLabels_wrapped[determinantVars$continuous],
+               " [ ",
+               leftAnchors_wrapped[determinantVars$continuous],
+               " | ",
+               rightAnchors_wrapped[determinantVars$continuous],
+               " ]"),
+      target = behaviorVarName,
+      sortBy = 6,
+      headingLevel = 3
+    );
+  
+  print(
+    behaviorchange:::knit_print.determinantSelectionTable(
+      dstList[[currentEduGroup]],
+      render_preview = FALSE
+    )
+  );
+
+}
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+```{r, export-aggregated-results}
+
+for (sampleName in names(dstList)) {
+  
+  write.csv(
+    dstList[[sampleName]],
+    file.path(
+      figureDataPath,
+      paste0(
+        "determinant-selection-table-",
+        sampleName,
+        ".csv")
+      ),
+    row.names = FALSE
+  );
+  
+  ### CIBERplots has the same names
+  tmpDf <- CIBERplots[[sampleName]]$intermediate$meansDat;
+  names(tmpDf)[1:3] <- c("mean_ci_lo", "mean_point", "mean_ci_hi");
+  row.names(tmpDf) <- tmpDf$label;
+  tmpDf[tmpDf$label, c("r_ci_lo", "r_point", "r_ci_hi")] <-
+    CIBERplots[[sampleName]]$intermediate$assocDat[[1]][tmpDf$label, ];
+  tmpDf$fullLabel <-
+    fullLabels[tmpDf$label];
+  
+  write.csv(
+    tmpDf,
+    file.path(
+      figureDataPath,
+      paste0(
+        "CIBER-plot-data-",
+        sampleName,
+        ".csv")
+      ),
+    row.names = FALSE
+  );
+  
+}
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# SHAP plots {.tabset .tabset-pills}
+
+```{r, results="asis"}
+
+sampleLabels <-
+  c(
+    fullSample = "Full sample",
+    `Practical` = "Education: practical",
+    `Theoretical` = "Education: theoretical",
+    `Younger than 40` = "Age: 18-39",
+    `40 to 59` = "Age: 40-59",
+    `60 or older` = "Age: 60+"
+  );
+
+shapFilenames <-
+  c(
+    fullSample = file.path(figureDataPath,
+                           "All_shap_real_values.csv"),
+    `Practical` = file.path(figureDataPath,
+                            "Lower_Education_shap_real_values.csv"),
+    `Theoretical` = file.path(figureDataPath,
+                              "Higher_Education_shap_real_values.csv"),
+    `Younger than 40` = file.path(figureDataPath,
+                                  "18 - 39_shap_real_values.csv"),
+    `40 to 59` = file.path(figureDataPath,
+                           "40 - 59_shap_real_values.csv"),
+    `60 or older` = file.path(figureDataPath,
+                              "60+_shap_real_values.csv")
+  );
+
+shapDfs <-
+  stats::setNames(
+    lapply(
+      shapFilenames,
+      read.csv
+    ),
+    names(shapFilenames)
+  );
+
+shapDfs <-
+  lapply(
+    shapDfs,
+    function(currentDf) {
+      currentDf$label <-
+        fullLabels[currentDf$variable];
+      ### Reverse order because ggplot plots from bottom to top on Y axis
+      currentDf$label <-
+        factor(
+          currentDf$label,
+          levels = rev(unique(fullLabels[currentDf$variable])),
+          ordered = TRUE
+        );
+      ### Store actual_value as factor, too
+      currentDf$actualValue_factor <-
+        factor(
+          currentDf$actual_value,
+          levels = seq(min(currentDf$actual_value, na.rm=TRUE),
+                       max(currentDf$actual_value, na.rm=TRUE)),
+          ordered = TRUE
+        );
+      return(currentDf);
+    }
+  );
+
+shapPlots <-
+  stats::setNames(
+    lapply(
+      names(shapDfs),
+      function(currentSample) {
+        return(
+          ggplot2::ggplot(
+            data = shapDfs[[currentSample]],
+            mapping = ggplot2::aes_string(
+              x = "shap_value",
+              y = "label",
+              fill = "actualValue_factor",
+              color = "actualValue_factor"
+            )
+          ) +
+            ggbeeswarm::geom_beeswarm(
+              size = 2,
+              alpha = .66
+            ) +
+            ggplot2::theme_minimal() +
+            ggplot2::labs(title = sampleLabels[currentSample],
+                          x = "SHAP Value",
+                          y = NULL,
+                          fill = "Score",
+                          color = "Score")
+        );
+      }
+    ),
+    nm = names(shapDfs)
+  );
+
+for (currentSample in names(shapPlots)) {
+  ufs::heading(sampleLabels[currentSample],
+               headingLevel = 2);
+  cat(
+    ufs::knitAndSave(
+      shapPlots[[currentSample]],
+      path = outputPath,
+      figCaption = paste0("SHAP values for ", sampleLabels[currentSample]),
+      figWidth = 9,
+      figHeight = 14
+    )
+  );
+}
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# Combined plots {.tabset .tabset-pills}
+
+```{r, combined-plots, results="asis"}
+
+widths <- c(.8, .2);
+plotWidths = 12;
+plotHeights = 13;
+
+for (i in names(CIBERplots)) {
+
+  ufs::heading(i, headingLevel = 2);
+  
+  ufs::knitAndSave(
+    patchwork::wrap_plots(CIBERplots[[i]]$output$plot,
+                          shapPlots[[i]],
+                          widths = widths),
+    path = outputPath,
+    figCaption = paste0("Combined plots for ", i),
+    figWidth = plotWidths,
+    figHeight = plotHeights
+  )
+  
+}
+
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+# Session information
+
+```{r, session-info}
+utils::sessionInfo();
+```

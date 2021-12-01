@@ -1,0 +1,167 @@
+---
+title: "Exploratory Factor Analysis of the Self Determination Theory Questionnaire"
+output: html_notebook
+---
+
+## Info on the project
+We have a dataset of responses from a questionnaire about corona taken within a general Finnish population. There are hypothesized **"determinants"** or latent variables that these questions fall under. 
+
+To ensure you are measuring these hypothesized latent variables one should perform a **psychometric validation**. In this project, we used the following methods to do so:
+  
+* **CFA**
+  + Confirmatory Factor Analyis 
+  + Specify the theoretical structure of the data (subscales + overarching corona variable) and let all questions 'load' only on the part of the model that they are supposed to belong to.
+  + Ideally, the questions have decent loadings and the model fits well to the data.
+  
+* **Measurement invariance**
+  + Check whether the above models are the same in different subgroups (e.g. male/female)
+
+* **Internal consistency of the subscales**
+  + Cronbach's alpha
+  + Guttman's lambda_6
+
+
+See the difference between [CFA and EFA](https://www.theanalysisfactor.com/confirmatory-and-exploratory-factor-analysis/) and the differences between [PCA and EFA](https://www.theanalysisfactor.com/the-fundamental-difference-between-principal-component-analysis-and-factor-analysis/).
+  
+Best practice is to use a different dataset for the exploratory part and the confirmatory part. This is not possible here, unless we split the dataset - perhaps we can do this in a follow up.
+
+### Read in the necessary libraries
+
+```{r message=FALSE, echo=TRUE}
+#load in necessary libraries
+library(MASS)
+library(vcd) #for assocstats
+library(corrplot)
+library(psych) #for describe(by)
+library(pastecs)
+library(qgraph)
+library(semPlot) # for semPath
+# library(gdata) # for read.xls
+library(lavaan) # for cfa, sem, lavaan etc
+library(semTools)
+library(Hmisc) #for rcorr
+
+source(file = "validation_utils.R")
+```
+
+
+```{r message=FALSE, echo=TRUE}
+sessionInfo()
+```
+
+
+### Read in the data
+
+```{r}
+df <- read.csv("data/taloustutkimus_james.csv")
+# code_df <- read.csv2("data/questions_and_categories.csv")[c("Variable.name", "Label", "Type")]
+code_df <- read.csv2("data/questions_and_categories_V2.csv")#[c("Variable.name", "Label", "Type")]
+```
+
+```{r}
+df[df==""] <- NA
+sapply(df, class)
+# transform(df, Q6_SO = as.numeric(Q6_SO))
+```
+
+
+```{r}
+feature_names_list <- code_df[code_df["Type"] == "sdt_needs" | code_df["Type"] == "sdt_motivation", "Variable.name"]
+```
+
+### Show Correlations between the questions
+
+```{r fig.height=7, fig.width=7}
+corrplot(cor(df[feature_names_list], method="spearman"),
+         type="lower", tl.srt=45, sig.level=0.01,insig = "blank")
+```
+
+
+```{r include=TRUE, echo=TRUE}
+#PCA and EFA specific preconditional analyses====
+#conduct bartlett test - test of whether variables in a matrix are correlated (i.e,
+#whether the correlation matrix is an identity matrix), the result should be
+#significant at p < .05. (only ran on Neuro data)
+cat('BARTLETT:'); cortest.bartlett(df[feature_names_list], n = nrow(df), diag = TRUE) #Yay $p.value = 0
+#KMO test output - KMO test is a statistic that is a measure of the proportion of variance 
+#among variables that might be common variance. This value should be greater than 0.5.
+cat('KMO:'); kmo(df[feature_names_list])$overall #overall is 0.94 so we good
+#Calculate the value of the determinant - The determinant is an indicator of multicollinearity - 
+#a measure of the overall relation between the variables, which should be greater than 0.00001 
+#for the data to be used in factor analysis.
+cat('DETERMINANT:'); det(cor(df[feature_names_list], method='spearman')) #determinant is 1.014526e-11 - consider removing highly correlated variables - e.g. 
+#check correlation matrix df
+cors <- data.frame(cor(df[feature_names_list], method='spearman')) 
+```
+
+##CFA
+
+For every CFA, a model syntax is provided. The model is fit according to this model, and the goodness of fit is evaluated by several measures.  
+
+* cfi (comparitive fit index) should be > 0.95 (or > 0.90)
+* rmsea (root mean squared error of approximation) should be < 0.05 (or < 0.08)
+* srmr (standardized root mean square residual) should be < 0.05 (or < 0.08)
+* gfi (goodness of fit index) should be > 0.90 (or > 0.95)
+
+```{r}
+code_df[code_df["Type"] == "sdt_motivation", c("Variable.name", "Type", "New.variable.name")]
+# dplyr::filter(code_df, Variable.name %in% feature_names_list)[c("Variable.name", "Type", "New.variable.name")]
+
+```
+
+```{r}
+paste(unlist(code_df[code_df["Type"] == "sdt_needs", "Variable.name"]), collapse=" + ")
+```
+
+
+```{r}
+# Models for the entire population ========================================================
+#### four subscales (without questions that were not correlated to other items, without sleep)
+theo_model <- '
+sdt_needs_autonomy =~ Q42_1 + Q42_4
+sdt_needs_competence =~ Q42_2 + Q42_5
+sdt_needs_relatedness =~ Q42_3 + Q42_6
+
+sdt_motivation_extrinsic =~ Q48_1 + Q48_5 + Q48_8
+sdt_motivation_amotivation =~ Q48_2 + Q48_7 + Q48_12
+sdt_motivation_identified =~ Q48_3 + Q48_9 + Q48_10 + Q48_11
+sdt_motivation_introjected =~ Q48_4 + Q48_6 + Q48_13
+
+'
+```
+
+
+```{r fig.height=5, fig.width=10, echo=TRUE}
+fit_theo <- cfa(theo_model, data=df, 
+                           #group = 'Version',
+                    std.lv = TRUE, 
+                    orthogonal = F,
+                    control = list(rel.tol=1e-9, iter.max=1e6),
+                    verbose=FALSE)
+summary(fit_theo, standardized = T, fit.measures=TRUE)
+```
+
+
+```{r fig.height=15, fig.width=10}
+#Plot the model
+semPaths(fit_theo, what= "std", layout = "tree", rotation = 2, 
+         nCharNodes = 0,intercepts = F, residuals = F, edge.label.cex = 0.8, 
+         sizeLat2 = 3, sizeMan2 = 2, borders=F, label.cex=1.2, 
+         # edge.label.position = rep(c(0.6,0.7),100)[1:90], 
+         # edge.label.position = rep(c(0.6,0.7),300)[1:23],
+         width = 10, label.scale=T, #posCol=neurocolours[3], negCol=neurocolours[6],
+         maximum=1.25, thresholds=F)
+```
+
+
+```{r fig.height=5, fig.width=10, echo=TRUE}
+try(check_cfa(fit_theo, show_mod_ind = F))
+```
+
+
+```{r}
+fit_theo_factor_loadings_df <- data.frame(inspect(fit_theo,what="std")$lambda)
+fit_theo_factor_loadings_df
+# write.csv(fit_theo_factor_loadings_df, "data/factor_loadings_V2.csv")
+```
+
