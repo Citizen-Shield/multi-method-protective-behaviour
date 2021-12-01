@@ -1,0 +1,69 @@
+"mean_ci_lo","mean_point","mean_ci_hi","label","rownr","constant","r_ci_lo","r_point","r_ci_hi","fullLabel"
+0.483436599112966,0.522919448153093,0.56240229719322,"aff_attitude_difficult_breathing",16,1,-0.357005663445797,-0.292858960356242,-0.225963064888334,"When I use a face mask, I feel or would
+feel ... [ Very easy to breathe | Very
+difficult to breathe ]"
+0.410171401675304,0.457276368491322,0.504381335307339,"risk_fear_restrictions",27,1,-0.348211416428749,-0.283650514182255,-0.216411474171009,"Spread of coronavirus… [ Doesn't scare
+me | Scares me ]"
+0.784810484058411,0.819759679572764,0.854708875087117,"effective_means_handwashing",17,1,0.0383669560887311,0.10970190368824,0.179924400021774,"Hand washing and use of gloves [
+Ineffective | Effective ]"
+0.179205528497482,0.203890902155255,0.228576275813027,"risk_likely_contagion",21,1,0.0933604110136215,0.163900701894099,0.232803751405493,"Perceived risk coronavirus infection [
+Doesn't scare me | Scares me ]"
+0.677960440688326,0.713395638629283,0.748830836570241,"effective_means_ventilation",20,1,0.129113641783347,0.198910331847058,0.266745868370653,"Ventilation [ Ineffective | Effective ]"
+0.898641380169413,0.924121050289275,0.949600720409136,"norms_officials",10,1,0.248542387413636,0.314577883860784,0.377702720418323,"The authorities think I should .. [ Not
+to use a mask | Use a mask ]"
+0.365764229765489,0.402091677792612,0.438419125819736,"risk_severity",23,1,0.268309640799882,0.333535301486937,0.395716786499161,"Perceived risk severity coronavirus
+infection [ Doesn't scare me | Scares
+me ]"
+0.401569894503686,0.44681797952826,0.492066064552834,"risk_fear_contagion_self",25,1,0.27683291716227,0.341693147804467,0.403453987442053,"Spread of coronavirus… [ Doesn't scare
+me | Scares me ]"
+0.574782292473741,0.612372051624388,0.649961810775035,"inst_attitude_sense_of_community",5,1,0.281437444893496,0.346096196673101,0.407626333894019,"If or when I use a face mask… [ It
+decreases sense of community | It
+increases sense of community ]"
+0.634776211524826,0.669559412550067,0.704342613575307,"inst_attitude_protects_self",3,1,0.286274649419248,0.350718675452194,0.412003850304495,"If or when I use a face mask… [ I
+expose myself to coronavirus infection
+| I protect myself from coronavirus
+infection ]"
+0.732097156198919,0.769247886070316,0.806398615941713,"effective_means_distance",19,1,0.286535311026989,0.350967677034024,0.412239576092657,"Keeping a safety distance (2 meters) [
+Ineffective | Effective ]"
+0.533703178967017,0.580551846906987,0.627400514846957,"inst_attitude_enough_oxygen",6,1,0.286928556543349,0.351343314482076,0.412595170494531,"If or when I use a face mask… [ I get
+enough oxygen | I don't get enough
+oxygen ]"
+0.834378749784176,0.866711170449488,0.8990435911148,"norms_risk_groups",9,1,0.294320985545417,0.358400880968597,0.419272694922134,"People at risk think I should .. [ Not
+to use a mask | Use a mask ]"
+0.38898202995109,0.425678682688028,0.462375335424967,"aff_attitude_comfortable",12,1,0.297385526286674,0.361324458089238,0.42203691275604,"When I use a face mask, I feel or would
+feel ... [ Very uncomfortable | Very
+comfortable ]"
+0.360786870768748,0.404539385847797,0.448291900926846,"inst_attitude_no_needless_waste",7,1,0.317425945945069,0.380412112080677,0.440056428678863,"If or when I use a face mask… [ I
+produce unnecessary waste | I do not
+produce unnecessary waste ]"
+0.38092361897516,0.416173946214,0.45142427345284,"risk_contagion_absent_protection",22,1,0.322652716742732,0.385381583315933,0.444739942373872,"Perceived risk coronavirus infection
+with no protective behaviours [ Doesn't
+scare me | Scares me ]"
+0.66694986787504,0.707165109034268,0.747380350193496,"risk_fear_contagion_others",26,1,0.330892812143623,0.393208658425084,0.452110048330156,"Spread of coronavirus… [ Doesn't scare
+me | Scares me ]"
+0.520164282894084,0.559190031152648,0.598215779411212,"aff_attitude_calm",13,1,0.334059950301257,0.396214648429802,0.454938403270746,"When I use a face mask, I feel or would
+feel ... [ Very anxious | Very calm ]"
+0.490260191748128,0.533155318202047,0.576050444655966,"risk_fear_spread",24,1,0.346093421723387,0.407623705149573,0.465662485887052,"Spread of coronavirus… [ Doesn't scare
+me | Scares me ]"
+0.592062032293824,0.623275478415665,0.654488924537506,"aff_attitude_safe",14,1,0.360050316318648,0.420832361083647,0.478056869290143,"When I use a face mask, I feel or would
+feel ... [ Very insecure | Very safe ]"
+0.709948596129079,0.747886070315977,0.785823544502875,"norms_people_present_indoors",11,1,0.369225786390751,0.42950190901437,0.486179597201113,"In the indoors spaces I visit, people
+on the site think I should… [ Not to
+use a mask | Use a mask ]"
+0.737148919316468,0.769470404984424,0.801791890652379,"aff_attitude_responsible",15,1,0.413762827756475,0.471425984116974,0.525321655100903,"When I use a face mask, I feel or would
+feel ... [ Very irresponsible | Very
+responsible ]"
+0.756029586524243,0.793947485536271,0.831865384548298,"norms_family_friends",8,1,0.426902502740857,0.483745172579684,0.536780164788237,"My family and friends think I should ..
+[ Not to use a mask | Use a mask ]"
+0.655976393305645,0.697819314641745,0.739662235977844,"effective_means_masks",18,1,0.438634471935895,0.494725556506416,0.546976941936401,"Using a face mask [ Ineffective |
+Effective ]"
+0.640641826167314,0.686248331108144,0.731854836048975,"automaticity_carry_mask",1,1,0.4671910494777,0.521378073738986,0.571663100363458,"Is taking a mask with you automatic for
+you? [ 1 Not at all automatic | 7 Fully
+automatic ]"
+0.819030643238592,0.850244770805519,0.881458898372445,"inst_attitude_protects_others",4,1,0.47948966544581,0.532824178738879,0.582236868473173,"If or when I use a face mask… [ I
+expose others to coronavirus infection
+| I protect others from coronavirus
+infection ]"
+0.680143527104104,0.724744103248776,0.769344679393448,"automaticity_put_on_mask",2,1,0.497277382391838,0.549344440517423,0.59746866207512,"Is putting on a mask automatic for you?
+[ 1 Not at all automatic | 7 Fully
+automatic ]"

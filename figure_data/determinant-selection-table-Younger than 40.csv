@@ -1,0 +1,54 @@
+"determinant","lower","current","upper","weight","p_delta"
+"If or when I use a face mask… [ I produce
+unnecessary waste | I do not produce
+unnecessary waste ]",0,0.404539385847797,1,0.380412112080677,0.226520429890497
+"When I use a face mask, I feel or would
+feel ... [ Very uncomfortable | Very comfortable ]",0,0.425678682688028,1,0.361324458089238,0.207516338746845
+"Perceived risk severity coronavirus
+infection [ Doesn't scare me | Scares me ]",0,0.402091677792612,1,0.333535301486937,0.19942353250899
+"Spread of coronavirus… [ Doesn't scare me | Scares me ]",0,0.533155318202047,1,0.407623705149573,0.190296958923855
+"Spread of coronavirus… [ Doesn't scare me | Scares me ]",0,0.44681797952826,1,0.341693147804467,0.189018505883824
+"When I use a face mask, I feel or would
+feel ... [ Very anxious | Very calm ]",0,0.559190031152648,1,0.396214648429802,0.174655366831206
+"Perceived risk coronavirus infection
+with no protective behaviours [ Doesn't scare me | Scares me ]",0,0.416173946214,0.857142857142857,0.385381583315933,0.169941297086866
+"Is taking a mask with you automatic for
+you? [ 1 Not at all
+automatic | 7 Fully automatic ]",0,0.686248331108144,1,0.521378073738986,0.163583240759228
+"When I use a face mask, I feel or would
+feel ... [ Very insecure | Very safe ]",0,0.623275478415665,1,0.420832361083647,0.158537869896443
+"Is putting on a mask automatic for you? [ 1 Not at all
+automatic | 7 Fully automatic ]",0,0.724744103248776,1,0.549344440517423,0.151210296599923
+"Using a face mask [ Ineffective | Effective ]",0,0.697819314641745,1,0.494725556506416,0.149496507729353
+"If or when I use a face mask… [ I get enough oxygen | I don't get enough
+oxygen ]",0,0.580551846906987,1,0.351343314482076,0.147370304361085
+"If or when I use a face mask… [ It decreases sense
+of community | It increases sense
+of community ]",0,0.612372051624388,1,0.346096196673101,0.134156558656997
+"If or when I use a face mask… [ I expose myself to
+coronavirus
+infection | I protect myself
+from coronavirus
+infection ]",0,0.669559412550067,1,0.350718675452194,0.115891685146085
+"Spread of coronavirus… [ Doesn't scare me | Scares me ]",0,0.707165109034268,1,0.393208658425084,0.115145214616691
+"When I use a face mask, I feel or would
+feel ... [ Very irresponsible | Very responsible ]",0,0.769470404984424,1,0.471425984116974,0.108677641198305
+"In the indoors spaces I visit, people
+on the site think I should… [ Not to use a mask | Use a mask ]",0,0.747886070315977,1,0.42950190901437,0.108283414088403
+"Perceived risk coronavirus infection [ Doesn't scare me | Scares me ]",0,0.203890902155255,0.857142857142857,0.163900701894099,0.107068453936161
+"My family and friends think I should .. [ Not to use a mask | Use a mask ]",0,0.793947485536271,1,0.483745172579684,0.0996769091697347
+"Keeping a safety distance (2 meters) [ Ineffective | Effective ]",0,0.769247886070316,1,0.350967677034024,0.0809865333965916
+"If or when I use a face mask… [ I expose others to
+coronavirus
+infection | I protect others
+from coronavirus
+infection ]",0,0.850244770805519,1,0.532824178738879,0.0797932070074022
+"Ventilation [ Ineffective | Effective ]",0,0.713395638629283,1,0.198910331847058,0.0570085686290634
+"People at risk think I should .. [ Not to use a mask | Use a mask ]",0,0.866711170449488,1,0.358400880968597,0.0477708339341766
+"The authorities think I should .. [ Not to use a mask | Use a mask ]",0,0.924121050289275,1,0.314577883860784,0.0238698394295788
+"Hand washing and use of gloves [ Ineffective | Effective ]",0,0.819759679572764,1,0.10970190368824,0.0197727062722462
+"When I use a face mask, I feel or would
+feel ... [ Very easy to
+breathe | Very difficult to
+breathe ]",0,0.522919448153093,1,-0.292858960356242,-0.139717314420067
+"Spread of coronavirus… [ Doesn't scare me | Scares me ]",0,0.457276368491322,1,-0.283650514182255,-0.153943837136297

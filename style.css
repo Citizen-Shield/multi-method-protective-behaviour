@@ -1,0 +1,57 @@
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+}
+  
+  /* Header CSS */
+#header {
+height: 100vh;
+background: linear-gradient(rgba(121, 121, 120, 0.9), rgba(8, 5, 190, 0.8)), 
+url(https://citizenshieldproject.files.wordpress.com/2021/01/citizenshield-logo-colour.png);
+background-position: center;
+background-size:cover;
+background-attachment: fixed;
+display: flex;              /* establish flex container */
+flex-direction: column;     /* stack flex items vertically */
+justify-content: center;    /* center items vertically, in this case */
+align-items: center;        /* center items horizontally, in this case */
+}
+
+#header h1{
+  color: #fff;
+  /* font-weight: bold; */
+  margin:10px;
+  font-size: 35px;
+}
+
+#header h2{
+  color: #fff;
+  /* font-weight: bold; */
+  margin:10px;
+  font-size: 25px;
+  padding-bottom: 15px;
+}
+
+#header li{
+  color: #fff;
+  /* font-weight: bold; */
+  margin:10px;
+  font-size: 18px;
+}
+  
+#analysisList {
+  padding-top: 50px;
+  display: flex;              /* establish flex container */
+  flex-direction: column;     /* stack flex items vertically */
+  justify-content: center;    /* center items vertically, in this case */
+  align-items: center;        /* center items horizontally, in this case */
+}
+
+#navbarMenuHeroA a:hover{
+  background-color: rgba(8, 5, 190, 0.6);
+}
+
+#navbarMenuHeroA {
+  padding-top: 10%;
+}
