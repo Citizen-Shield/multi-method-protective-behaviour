@@ -1,15 +1,13 @@
 ---
-title: "Corona prepping using Finnish data CIBER"
-author: "James Twose, Gjalt-Jorn Peters, Kaisa Sauro, Matti Heino & Nelli Hankonen"
-date: "`r format(Sys.time(), '%H:%M:%S on %Y-%m-%d %Z (UTC%z)')`"
+title: "Multi Method approaches applied to COVID-19 protective behavior"
+author: "Kaisa Sauro, James Twose, Gjalt-Jorn Peters, Matti Heino & Nelli Hankonen"
+date: "`r format(Sys.time(), '%Y-%m-%d at %H:%M:%S %Z (UTC%z)')`"
 output:
   html_document:
     code_folding: hide
 editor_options: 
   chunk_output_type: console
 ---
-
-Main question: at this point we're interested in one single classification, i.e. what predicts whether people do maskless contacts with non-householders
 
 [Research Document](https://docs.google.com/document/d/1iLciHcvVvf8QwFS7wiyNBevpD1B9yDRqMlM4_oCcVcA/edit?usp=sharing)
 
@@ -88,7 +86,11 @@ ufs::checkPkgs("ggbeeswarm");            ### For beeswarms
 
 basePath <- here::here();
 
-dataPath <- file.path(basePath, "data");
+### NOTE: until we add in the data, the repo isn't portable anyway,
+###       so we might as well get the existing data from the old repo.
+
+dataPath <- normalizePath(file.path(basePath, "..", "coronapreppers", "data"));
+
 figureDataPath <- file.path(basePath, "figure_data");
 metadataPath <- file.path(basePath, "metadata");
 outputPath <- file.path(basePath, "images");
@@ -372,7 +374,8 @@ tryCatch({
   ### gets archived along with the rest if we freeze an OSF registration
   openxlsx::write.xlsx(
     questionLabelDf,
-    questionLabels_localBackupFilename
+    questionLabels_localBackupFilename,
+    overwrite = TRUE
   );
   
 }, error = function(e) {
@@ -465,100 +468,7 @@ fullLabels <-
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-
-```{r, set-parameters, eval=FALSE}
-
-###-----------------------------------------------------------------------------
-### Setting parameters (e.g. settings for the script etc)
-###-----------------------------------------------------------------------------
-
-grouping_var <- behaviorVarName
-# feature_list <- colnames(df[, !(names(df) %in% c(grouping_var, "id"))])
-feature_list <- c('intention_indoor_meeting', 'norms_people_present_indoors',
-       'sdt_motivation_extrinsic_2', 'sdt_motivation_identified_4', 'norms_family_friends', 'norms_risk_groups', 'norms_officials',
-       'norms_people_present_indoors')
-
-```
-
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-
-```{r, eval=FALSE}
-
-### James; deactivated this for now as this also happens just after the data
-### were loaded. I assume this was a left-over from another script (like the
-### 'commented out' loading of packages at the top), which also explains the
-### approach that was chosen? Or maybe that's because this is Python-thinking
-### expressed in R? :-)
-
-if (grouping_var == "behaviour_unmasked") {
-  # df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 'bad', 'good'))
-  df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 0, 1))
-
-  names(df)[names(df) == 'tmp'] <- paste0(grouping_var, "_bool")
-}
-    
-```
-
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
 <!-- At this point, we're done with the set-up                               -->
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-
-```{r}
-# df[, paste0(grouping_var, "_bool")] <- as.factor(df[, paste0(grouping_var, "_bool")])
-```
-
-```{r, eval=FALSE}
-# df %<>%
-#        mutate_each_(funs(factor(.)), colnames(df))
-# str(df)
-
-# ordinal_vars_mydata <- ordering_lookup %>% 
-#   dplyr::filter(varname %in% names(df)) %>% 
-#   dplyr::filter(ordering == "ordered")
-#   
-# df <- df %>% 
-#   # Ordered variables as ordinal factors
-#   dplyr::mutate(across(.cols = ordinal_vars_mydata$varname, 
-#                         ~factor(., ordered = TRUE))) %>% 
-#   # Everything else as unordered factors
-#   dplyr::mutate(across(.cols = -ordinal_vars_mydata$varname, 
-#                         ~factor(.))) %>% 
-#   # Fix ordering in the intention variables
-#   dplyr::mutate(across(.cols = contains("intention_"), 
-#                         ~dplyr::recode_factor(.,
-#                                               "1" = "4",
-#                                               "2" = "1", 
-#                                               "3" = "2",
-#                                               "4" = "3",
-#                                               .ordered = TRUE)))
-
-str(df)
-
-###-----------------------------------------------------------------------------
-### @James: maybe use the fact that we already depend on dplyr anyway and use
-### dplyr::glimpse here, instead of str?
-###-----------------------------------------------------------------------------
-
-```
-
-```{r, fig.height=15, fig.width=15, eval=FALSE}
-# Exploratory data analysis
-plot_intro(df)
-plot_bar(df)
-plot_correlation(df)
-```
-
-
-```{r, eval=FALSE}
-head(df[, c(paste0(grouping_var, "_bool"), grouping_var)])
-```
-
-<!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
@@ -615,6 +525,41 @@ ufs::knitAndSave(
   path = outputPath,
   figWidth = attr(CIBERplots$fullSample$output$plot, "width"),
   figHeight = attr(CIBERplots$fullSample$output$plot, "height"),
+);
+
+selectedDeterminants <-
+  c("automaticity_carry_mask",
+    "automaticity_put_on_mask",
+    "effective_means_masks",
+    "effective_means_distance",
+    "inst_attitude_protects_others",
+    "norms_family_friends",
+    "norms_officials",
+    "aff_attitude_difficult_breathing",
+    "risk_fear_restrictions")
+
+CIBERplot_fullSample_selection <-
+  behaviorchange::CIBER(
+    data=df,
+    determinants = selectedDeterminants,
+    targets = behaviorVarName,
+    orderBy = behaviorVarName,
+    titleVarLabels = stats::setNames("mask wearing", nm=behaviorVarName),
+    titleSuffix = "(full sample, selection)",
+    subQuestions = questionLabels_wrapped[selectedDeterminants],
+    leftAnchors = leftAnchors_wrapped[selectedDeterminants],
+    rightAnchors = rightAnchors_wrapped[selectedDeterminants],
+    jitterWidth = ciberJitterWidth,
+    drawPlot = FALSE,
+    returnPlotOnly = FALSE
+  );
+
+ufs::knitAndSave(
+  CIBERplot_fullSample_selection$output$plot,
+  figCaption = paste0("CIBER plot for the full sample (selection)."),
+  path = outputPath,
+  figWidth = attr(CIBERplot_fullSample_selection$output$plot, "width"),
+  figHeight = attr(CIBERplot_fullSample_selection$output$plot, "height"),
 );
 
 ```
@@ -692,38 +637,6 @@ for (currentEduGroup in levels(df$demographic_educationType)) {
   );
  
 }
-
-```
-
-```{r, CIBER-dichotomized-behavior, eval=FALSE}
-
-### Chunk set to eval=FALSE since we no longer look at this
-
-# CIBERplots$dichotomized_behavior <-
-#   behaviorchange::CIBER(
-#     data=df,
-#     determinants = determinantVars$continuous,
-#     targets = behaviorVarName_dichotomized,
-#     orderBy = behaviorVarName_dichotomized,
-#     subQuestions = questionLabels_wrapped[determinantVars$continuous],
-#     leftAnchors = leftAnchors_wrapped[determinantVars$continuous],
-#     rightAnchors = rightAnchors_wrapped[determinantVars$continuous],
-#     drawPlot = FALSE
-#   );
-# 
-# ufs::knitAndSave(
-#   CIBERplots$dichotomized_behavior,
-#   figCaption = paste0("CIBER plot for dichotomized behavior measure; ",
-#                       "note that the right-hand panel shows the ",
-#                       "point-biserial correlation, not the ",
-#                       "Pearson correlation."),
-#   path = outputPath,
-#   figWidth = attr(CIBERplots$dichotomized_behavior, "width"),
-#   figHeight = attr(CIBERplots$dichotomized_behavior, "height"),
-# );
-
-### ufs::knitAndSave both knits and, well, saves :-)
-# ggsave("CIBER_plot_boolean.png", dpi = 400)
 
 ```
 
