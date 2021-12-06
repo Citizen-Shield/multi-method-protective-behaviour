@@ -1,0 +1,765 @@
+---
+title: "Corona prepping using Finnish data Decision Trees"
+author: "James Twose"
+output: html_notebook
+---
+
+Main question: at this point we're interested in one single classification, i.e. what predicts whether people do maskless contacts with non-householders
+
+[Research Document](https://docs.google.com/document/d/1iLciHcvVvf8QwFS7wiyNBevpD1B9yDRqMlM4_oCcVcA/edit?usp=sharing)
+
+[Questions codebook](https://docs.google.com/document/d/1YZVCP1UNxnNLAK2kYDfA9Y98leTZYurZD-d8iByhdi0/edit?usp=sharing)
+
+[Method of delivery](https://docs.google.com/document/d/1G1JT9JUJrTK3aaXXuRawYACJaGNxU7mcXL9i-d8eKXY/edit)
+
+```{r, echo=FALSE, message=FALSE}
+library(ggplot2)
+library(parsnip)
+library(magrittr)
+library(dplyr)
+library(faux)
+library(DataExplorer)
+library(caret)
+library(randomForest)
+library(tidyr)
+library(cvms)
+library(doParallel)
+library(rattle)
+library(rpart)
+
+library(tidyverse)
+
+# devtools::install_github('ModelOriented/treeshap')
+
+```
+
+```{r}
+sessionInfo()
+getwd()
+```
+
+# Data preparation
+
+```{r}
+df <- read.csv("../../data/taloustutkimus/shield_gjames_21-06-10.csv")
+```
+
+```{r}
+grouping_var <- "behaviour_unmasked"
+# feature_list <- colnames(df[, !(names(df) %in% c(grouping_var, "id"))])
+feature_list <- c('intention_indoor_meeting', 'norms_people_present_indoors',
+       'sdt_motivation_extrinsic_2', 'sdt_motivation_identified_4', 'norms_family_friends', 'norms_risk_groups', 'norms_officials',
+       'norms_people_present_indoors')
+```
+
+```{r}
+if (grouping_var == "behaviour_unmasked") {
+  # df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 'bad', 'good'))
+  df <- df %>% mutate(tmp = if_else(!!as.symbol(grouping_var) != 5, 0, 1))
+
+  names(df)[names(df) == 'tmp'] <- paste0(grouping_var, "_bool")
+}
+    
+```
+
+```{r}
+df[, paste0(grouping_var, "_bool")] <- as.factor(df[, paste0(grouping_var, "_bool")])
+```
+
+## Wrangle ordered and unordered factors
+
+Create dataframe with the appropriate measurement scales (from: <https://docs.google.com/spreadsheets/d/1BEX4W8XRGnuDk4Asa_pdKij3EIZBvhSPqHxFrDjM07k/edit#gid=935884211>)
+
+```{r}
+ordering_lookup <- data.frame(
+  varname = c("demographic_id", "demographic_gender", "demographic_age", "demographic_region", "demographic_4_areas", "demographic_8_areas", "demographic_education", "demographic_profession", "demographic_household_stage", "demographic_household_size", "demographic_household_income", "demographic_apartment_type", "behaviour_indoors_nonhouseholders", "behaviour_close_contact", "behaviour_quarantined", "behaviour_unmasked", "mask_wearing_cloth_mask", "mask_wearing_disposable_mask", "mask_wearing_certified_mask", "mask_wearing_ffp2", "mask_wearing_vizire", "mask_wearing_none", "mask_wearing_other", "mask_wearing_reuse", "intention_store", "intention_public_transport", "intention_indoor_meeting", "intention_restaurant", "intention_pa", "automaticity_carry_mask", "automaticity_put_on_mask", "post_covid_maskwearing_if_reccd", "inst_attitude_protects_self", "inst_attitude_protects_others", "inst_attitude_sense_of_community", "inst_attitude_enough_oxygen", "inst_attitude_no_needless_waste", "norms_family_friends", "norms_risk_groups", "norms_officials", "norms_people_present_indoors", "aff_attitude_comfortable", "aff_attitude_calm", "aff_attitude_safe", "aff_attitude_responsible", "aff_attitude_difficult_breathing", "barriers_nothing", "barriers_money", "barriers_forget_carry", "barriers_forget_wear", "barriers_group_pressure", "barriers_medical_symptoms", "barriers_skin", "barriers_difficult_breathing", "barriers_eyeglasses_fog", "barriers_raspyvoice", "barriers_headache", "barriers_drymouth", "barriers_earpain", "barriers_general_uncomfy", "barriers_other", "effective_means_handwashing", "effective_means_masks", "effective_means_distance", "effective_means_ventilation", "risk_likely_contagion", "risk_contagion_absent_protection", "risk_severity", "risk_fear_spread", "risk_fear_contagion_self", "risk_fear_contagion_others", "risk_fear_restrictions", "sdt_needs_autonomy_1", "sdt_needs_competence_1", "sdt_needs_relatedness_1", "sdt_needs_autonomy_2", "sdt_needs_competence_2", "sdt_needs_relatedness_2", "sdt_motivation_extrinsic1", "sdt_motivation_amotivation_1", "sdt_motivation_identified_1", "sdt_motivation_introjected_1", "sdt_motivation_extrinsic_2", "sdt_motivation_introjected_2", "sdt_motivation_amotivation_2", "sdt_motivation_extrinsic_3", "sdt_motivation_identified_2", "sdt_motivation_identified_3", "sdt_motivation_identified_4", "sdt_motivation_amotivation_3", "sdt_motivation_introjected_3", "attention_check", "vaccination_status_intention_self", "vaccination_status_closeones", "covid_tested", "had_covid", "demographic_risk_group", "needprotection_before_shots", "needprotection_after_1_shot", "needprotection_after_2_shots", "children_age_groups"),
+  ordering = c("unordered", "mixed", "ordered", "unordered", "unordered", "unordered", "mixed", "unordered", "unordered", "mixed", "mixed", "unordered", "ordered", "ordered", "unordered", "ordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "mixed", "mixed", "mixed", "mixed", "mixed", "mixed", "ordered", "ordered", "unordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "unordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "ordered", "unordered", "ordered", "unordered", "ordered", "unordered", "ordered", "ordered", "ordered", "unordered")
+)
+
+```
+
+```{r}
+
+ordinal_vars_mydata <- ordering_lookup %>% 
+  dplyr::filter(varname %in% names(df)) %>% 
+  dplyr::filter(ordering == "ordered")
+  
+df <- df %>% 
+  # Ordered variables as ordinal factors
+  dplyr::mutate(across(.cols = ordinal_vars_mydata$varname, 
+                        ~factor(., ordered = TRUE))) %>% 
+  # Everything else as unordered factors
+  dplyr::mutate(across(.cols = -ordinal_vars_mydata$varname, 
+                        ~factor(.))) %>% 
+  # Fix ordering in the intention variables
+  dplyr::mutate(across(.cols = contains("intention_"), 
+                        ~dplyr::recode_factor(.,
+                                              "1" = "4",
+                                              "2" = "1", 
+                                              "3" = "2",
+                                              "4" = "3",
+                                              .ordered = TRUE))) %>%
+  na.omit()
+
+
+```
+
+```{r, fig.height=15, fig.width=15}
+# Exploratory data analysis
+DataExplorer::plot_intro(df)
+DataExplorer::plot_bar(df)
+DataExplorer::plot_correlation(df)
+```
+
+```{r}
+head(df[, c(paste0(grouping_var, "_bool"), grouping_var)])
+```
+
+```{r}
+x <- df %>%
+  dplyr::mutate(target = dplyr::case_when(
+      # at least part of the time intends to wear a mask, or doesn't go at all
+      intention_indoor_meeting != 3 & 
+        # didn't have maskless contacts during 7 days 
+        behaviour_unmasked >= 4 ~ 
+        "High_masking",
+      TRUE ~ "Low_masking")) %>% 
+  select(-contains("behaviour"),
+         -contains("intention"),
+         -id) %>%
+  as.data.frame() %>% 
+  na.omit()
+
+y <- x %>% 
+  dplyr::select(target) %>% 
+  dplyr::pull()
+
+x <- x %>% dplyr::select(-target)
+```
+
+```{r}
+set.seed(2021)
+inTrain <- createDataPartition(y, p = .80, list = FALSE)[,1]
+
+x_train <- x[ inTrain, ]
+x_test  <- x[-inTrain, ]
+
+y_train <- y[ inTrain]
+y_test  <- y[-inTrain]
+
+# colnames(x_train)
+```
+
+# FFT
+
+## Age groups
+
+```{r}
+fft_train <- data.frame(x_train, target = y_train) %>% 
+  dplyr::mutate(target = dplyr::case_when(target == "Low_masking" ~ FALSE,
+                                          target == "High_masking" ~ TRUE)) # %>% 
+  # dplyr::select(-contains("behaviour"),
+  #               -contains("mask_wearing"),
+  #               -contains("barrier"))
+
+fft_test <- data.frame(x_test, target = y_test) %>% 
+  dplyr::mutate(target = dplyr::case_when(target == "Low_masking" ~ FALSE,
+                                          target == "High_masking" ~ TRUE)) # %>% 
+  # dplyr::select(-contains("behaviour"),
+  #               -contains("mask_wearing"),
+  #               -contains("barrier"))
+
+cl <- makePSOCKcluster(8)
+registerDoParallel(cl)
+
+set.seed(2021)
+
+fft_agegroup <- list(c("18-29", "30-39", "40-49", "50-59", "60+"),
+                     c("60+"), 
+                     c("40-49", "50-59"), 
+                     c("18-29", "30-39"))
+
+results_fft <- list()
+
+for (i in 1:length(fft_agegroup)){
+results_fft[[i]] <- FFTrees::FFTrees(formula = target ~ ., 
+                     data = fft_train %>% 
+                       dplyr::filter(demographic_age %in% fft_agegroup[[i]]),  
+                     data.test = fft_test %>% 
+                       dplyr::filter(demographic_age %in% fft_agegroup[[i]]),
+                     algorithm = "ifan", #"dfan",
+                     do.comp = TRUE,
+                     decision.labels = c("Lower masking", "Higher masking"))
+}
+  stopCluster(cl)
+
+for (i in 1:length(fft_agegroup)){
+plot(results_fft[[i]],   
+     # tree = i,
+     main = paste("Age groups:", 
+                  paste(fft_agegroup[[i]], collapse = ", "),
+                  collapse = ""),
+     # decision.labels = c("Adequate_masking", "Improvable"),
+     data = "test")
+}
+  
+```
+
+## Gender
+
+```{r}
+# fft_train <- data.frame(x_train, target = y_train) %>% 
+#   dplyr::mutate(target = dplyr::case_when(target == 0 ~ FALSE,
+#                                           target == 1 ~ TRUE)) # %>% 
+#   # dplyr::select(-contains("behaviour"),
+#   #               -contains("mask_wearing"),
+#   #               -contains("barrier"))
+# 
+# fft_test <- data.frame(x_test, target = y_test) %>% 
+#   dplyr::mutate(target = dplyr::case_when(target == 0 ~ FALSE,
+#                                           target == 1 ~ TRUE)) # %>% 
+#   # dplyr::select(-contains("behaviour"),
+#   #               -contains("mask_wearing"),
+#   #               -contains("barrier"))
+
+cl <- makePSOCKcluster(8)
+registerDoParallel(cl)
+
+set.seed(2021)
+
+fft_gender <- unique(fft_train$demographic_gender)
+
+results_fft <- list()
+
+for (i in fft_gender){
+results_fft[[i]] <- FFTrees::FFTrees(formula = target ~ ., 
+                     data = fft_train %>% 
+                       dplyr::filter(demographic_gender == fft_gender[[i]]),  
+                     data.test = fft_test %>% 
+                       dplyr::filter(demographic_gender == fft_gender[[i]]),
+                     algorithm = "ifan", #"dfan",
+                     do.comp = TRUE,
+                     decision.labels = c("Lower masking", "Higher masking"))
+}
+  stopCluster(cl)
+
+for (i in 1:length(fft_gender)){
+plot(results_fft[[i]],   
+     # tree = i,
+     main = paste("Gender:", 
+                  paste(fft_gender[[i]], collapse = ", "),
+                  collapse = ""),
+     # decision.labels = c("Adequate_masking", "Improvable"),
+     data = "test")
+}
+  
+```
+
+```{r}
+attr(df_categories$sdt_needs_relatedness_1, "label")
+
+attr(df_categories$sdt_motivation_extrinsic_2, "labels")
+
+attr(df_categories$post_covid_maskwearing_if_reccd, "labels")
+
+```
+
+# Running an ordinal variant of a decision tree (rpartScore) using the top features found, with a grid search CV
+
+```{r}
+# # Define the control using a random forest selection function
+# control <- rfeControl(functions = rfFuncs, # random forest
+#                       method = "repeatedcv", # or just cv
+#                       repeats = 10, # number of repeats
+#                       number = 10) # the number of folds
+```
+
+```{r}
+start_time <- Sys.time()
+
+cl <- parallel::makePSOCKcluster(8)
+doParallel::registerDoParallel(cl)
+
+set.seed(2021)
+
+
+# Specify 10 fold cross-validation
+ctrl_cv <- trainControl(method = "repeatedcv",
+                        search = "grid",
+                        number = 10,
+                        repeats = 10,
+                        timingSamps = 5,
+                        # seeds = c(1:101)
+                        )
+
+dectree_group <- list(c("18-29", "30-39", "40-49", "50-59", "60+"),
+                      c("60+"), 
+                      c("40-49", "50-59"), 
+                      c("18-29", "30-39"))
+
+dec_mod <- list()
+xdata <- list()
+xdata_balanced <- list()
+ydata <- list()
+xdata_balanced_notarget <- list()
+
+for (i in 1:length(dectree_group)){
+  
+  xdata[[i]] <- data.frame(x_train, target = y_train) %>% 
+    dplyr::filter(demographic_age %in% dectree_group[[i]]) 
+  
+  # Under- and oversampling to balance data
+  xdata_balanced[[i]] <- 
+    ROSE::ovun.sample(formula = target ~ ., 
+                      data = xdata[[i]],
+                      p = 0.5,
+                      seed = 1,
+                      method = "both")$data 
+  
+  ydata[[i]] <- xdata_balanced[[i]] %>% 
+    dplyr::select(target) %>% 
+    dplyr::pull()
+  
+  xdata_balanced_notarget[[i]] <- xdata_balanced[[i]] %>% 
+    dplyr::select(-target)
+
+
+  # Predict mask wearing using decision tree
+  dec_mod[[i]] <- caret::train(x = xdata_balanced_notarget[[i]],
+                        y = ydata[[i]],
+                        method = "rpartScore",  
+                        trControl = ctrl_cv,
+                        tuneGrid = expand.grid(
+                          # "by" used to be 0.1
+                          cp = seq(from = 0, to = 1, by = 0.05),
+                          split = c("abs", "quad"),
+                          prune = c("mc", "mr")
+                        )
+  )
+}
+
+parallel::stopCluster(cl)
+
+end_time <- Sys.time()
+end_time - start_time
+```
+
+```{r}
+foreach::registerDoSEQ()
+```
+
+```{r}
+target_balances <- list()
+
+for (i in 1:length(dectree_group)){
+target_balances[[i]] <- xdata_balanced[[i]] %>% 
+  dplyr::filter(demographic_age %in% dectree_group[[i]]) %>% 
+    pull(target) %>% 
+  table()
+}
+
+target_balances
+```
+
+
+
+```{r}
+varimp_data <- purrr::map(.x = dec_mod,
+                          .f = caret::varImp)
+
+varimp_data_viz <- purrr::map(.x = varimp_data,
+                              .f = ~.x[[1]] %>% 
+                                tibble::rownames_to_column(var = "Variable")) 
+                             
+varimp_data_viz_ordered <- 
+  purrr::map(.x = varimp_data_viz,
+             .f = ~.x %>% 
+               dplyr::mutate(Variable = 
+                               forcats::fct_reorder(Variable, Overall)))
+             
+# Use to match a subset's variable order to that of the whole group 
+order_to_match <- varimp_data_viz_ordered[[1]]$Variable
+
+varimp_plots_groups <- purrr::map2(.x = varimp_data_viz_ordered,
+            .y = dectree_group,
+            .f = ~.x %>% 
+              # # Matching order with that of the whole group is messy; omit.
+              # dplyr::mutate(Variable = factor(Variable, 
+              #                                 levels = rev(order_to_match))) %>% 
+              ggplot(aes(y = Variable,
+                         x = Overall,
+                         fill = Overall)) +
+              geom_bar(stat = "identity", position = "dodge") +
+              labs(x = "Importance",
+                   title = paste("Age groups:", 
+                                 paste(.y, collapse = ", "),
+                                 collapse = "")) +
+              
+              theme_bw() +
+              guides(fill = FALSE) +
+              scale_fill_viridis_c(option = "inferno",
+                                   end = 0.8))
+
+
+for (i in 1:length(varimp_plots_groups)) {
+              ggsave(filename = paste0("variable_importance_dectree_", 
+                                       paste(dectree_group[[i]], collapse = "_"),
+                                       ".png"), 
+                     plot = varimp_plots_groups[[i]],
+                     width = 14, 
+                     height = 14)
+}
+
+```
+
+## Differences in variable importance compared to full data
+
+```{r}
+# Renaming columns to reflect groups
+new_varnames <- purrr::map(.x = dectree_group,
+                           .f = ~paste(.x, collapse = ", "))
+
+new_varnames[[1]] <- "All ages"
+
+varimp_renamed <- purrr::map2(.x = varimp_data_viz_ordered,
+           .y = new_varnames,
+           .f = ~.x %>% 
+             # https://stackoverflow.com/a/46616742
+             dplyr::rename(!!.y := Overall))
+
+# Merge the data frames with different age groups
+varimp_renamed_joined <- varimp_renamed %>% 
+  purrr::reduce(left_join, by = "Variable")
+
+percentile_dropped <- 20
+
+varimp_renamed_joined_dropped <- varimp_renamed_joined %>% 
+  dplyr::mutate(importance_sum = rowSums(across(where(is.numeric)))) %>% 
+  # Drop the values that are not important in any of the groups
+  filter(`All ages` > quantile(importance_sum, percentile_dropped/100)) 
+
+# Calculate differences from importances in full dataset
+varimp_renamed_joined_diff <- varimp_renamed_joined_dropped %>% 
+  dplyr::rowwise() %>% 
+  dplyr::mutate(across(-c("Variable", `All ages`, importance_sum),
+                ~. - `All ages`,
+                .names = "{.col}_diff")) %>% 
+  dplyr::ungroup()
+
+varimp_diff_viz <- varimp_renamed_joined_diff %>% 
+  dplyr::mutate(ordering = `All ages`) %>%
+  tidyr::pivot_longer(c(`All ages`, contains("_diff")),
+                      names_to = "Group",
+                      values_to = "importance_diff") %>% 
+  # dplyr::mutate(Variable = paste0(Variable, 
+  #                                 " (", 
+  #                                 round(`All ages`, digits = 0),
+  #                                 ")")) %>% 
+  # # For plotting, order the variables according to...
+  # dplyr::group_by(Variable) %>% 
+  # dplyr::mutate(ordering = sum(abs(importance_diff))) %>% 
+  # dplyr::ungroup() %>%
+  # Reorder by previously defined rule
+  dplyr::mutate(Variable = forcats::fct_reorder(Variable, abs(ordering))) %>% 
+  dplyr::mutate(Group = stringr::str_remove(string = Group,
+                                            pattern = "_diff")) %>% 
+  dplyr::select(Variable, Group, importance_diff) 
+
+# head(varimp_diff_viz)
+
+varimp_diff_viz_with_aggregate_importance <- dplyr::left_join(
+  x = varimp_diff_viz,
+  y = varimp_renamed_joined %>% 
+    dplyr::select(Variable, aggregate_importance = `All ages`),
+  by = "Variable")
+```
+
+### Make plots
+
+```{r}
+plot_varimp_subgroup_diffs <- varimp_diff_viz_with_aggregate_importance %>%
+  dplyr::filter(stringr::str_detect(string = Variable,
+                                    pattern = "demographic_age",
+                                    negate = TRUE)) %>%
+  dplyr::filter(Group != "All ages") %>% 
+  ggplot(aes(y = Variable,
+             x = importance_diff,
+             fill = importance_diff)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  # # Point indicating aggregate importance; not very clear 
+  # geom_point(aes(x = 0,
+  #                y = Variable,
+  #                fill = aggregate_importance,
+  #                size = aggregate_importance,
+  #                alpha = 0.5)) +
+  labs(x = "Difference in importance",
+       y = NULL) +
+  theme_bw() +
+  guides(fill = FALSE,
+         size = FALSE,
+         alpha = FALSE) +
+  scale_fill_viridis_c(option = "inferno",
+                       end = 0.8) +
+  theme(text = element_text(size = 20)) +
+  facet_wrap(~Group, 
+             #ncol = 3
+             )
+
+plot_varimp_aggregate_absolutes <- varimp_diff_viz_with_aggregate_importance %>%
+  dplyr::filter(stringr::str_detect(string = Variable,
+                                    pattern = "demographic_age",
+                                    negate = TRUE)) %>%
+  dplyr::filter(Group == "All ages") %>% 
+  ggplot(aes(y = Variable,
+             x = importance_diff,
+             fill = importance_diff)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Absolute importance",
+       y = NULL,
+       caption = paste0(
+  "- Zero values indicate importance is equal to that of full group.\n",
+  "- Positive (negative) values indicate variable is ",
+  "more (less) important in subgroup.\n",
+  # "- Size of ball represents importance",
+  # "in the model with full population.\n",
+  "- ", percentile_dropped,
+  " percent of variables with smallest importance values omitted.\n"
+  # "- Variables are ordered by ",
+  # "sum of absolute values of differences from population value."
+  )
+       ) +
+  theme_bw() +
+  guides(fill = FALSE,
+         size = FALSE,
+         alpha = FALSE) +
+  scale_fill_viridis_c(option = "inferno",
+                       end = 0.8) +
+  theme(text = element_text(size = 20)) +
+  facet_wrap(~Group, 
+             #ncol = 3
+             )
+
+cowplot::plot_grid(plot_varimp_subgroup_diffs, 
+                   plot_varimp_aggregate_absolutes +
+                     theme(axis.text.y = element_blank(),
+                           axis.line.y = element_blank(),
+                           axis.title.y= element_blank(),
+                           axis.ticks.y= element_blank()),
+                   nrow = 1,
+                   rel_widths = c(3, 1),
+                   align = 'h', axis = 'tb')
+
+ggsave(filename = "plot_of_differences.png", 
+       width = 14, 
+       height = 14)
+
+```
+
+
+```{r}
+for(i in 1:length(dec_mod)){
+  print(dec_mod[[i]]$results)
+}
+```
+
+## Post prediction
+
+```{r}
+
+xdata_test <- list()
+ydata_test <- list()
+xdata_test_notarget <- list()
+
+for (i in 1:length(dectree_group)){
+  
+  xdata_test[[i]] <- data.frame(x_test, target = y_test) %>% 
+    dplyr::filter(demographic_age %in% dectree_group[[i]]) 
+
+  ydata_test[[i]] <- xdata_test[[i]] %>% 
+    dplyr::select(target) %>% 
+    dplyr::pull()
+    
+  xdata_test_notarget[[i]] <- xdata_test[[i]] %>% 
+    dplyr::select(-target)
+  
+  caret::postResample(predict(dec_mod[[i]], 
+                              xdata_test_notarget[[i]]), 
+                      factor(ydata_test[[i]]))
+  
+}
+
+```
+
+```{r}
+prediction_tibble <- list()
+prediction_table <- list()
+cfm <- list()
+
+for (i in 1:length(dectree_group)){
+  prediction_tibble[[i]] <- 
+    tibble("target" = ydata_test[[i]],
+           "prediction" = predict(dec_mod[[i]], xdata_test_notarget[[i]]))
+  
+  prediction_table[[i]] <- table(prediction_tibble[[i]])
+  
+  cfm[[i]] <- as_tibble(prediction_table[[i]])
+  
+  print(plot_confusion_matrix(cfm[[i]], 
+                        target_col = "target", 
+                        prediction_col = "prediction",
+                        counts_col = "n"))
+  
+}
+```
+
+```{r, fig.height=10, fig.width=15}
+for (i in 1:length(dectree_group)){
+  rattle::fancyRpartPlot(dec_mod[[i]]$finalModel)
+}
+```
+
+```{r}
+pred_df <- list()
+zero_ids <- list()
+one_ids <- list()
+
+for (i in 1:length(dectree_group)){
+pred_df[[i]] <- data.frame(
+  target = as.numeric(factor(ydata_test[[i]])),
+  prediction = as.numeric(predict(dec_mod[[i]], xdata_test_notarget[[i]])),
+  row.names = rownames(xdata_test_notarget))
+
+pred_df[[i]]$correct_or_not <- pred_df[[i]]$target + pred_df[[i]]$prediction
+
+zero_ids[[i]] <- rownames(pred_df[[i]][pred_df[[i]][, "correct_or_not"] == 2, ])
+one_ids[[i]] <- rownames(pred_df[[i]][pred_df[[i]][, "correct_or_not"] == 4, ])
+
+print(paste0(i, ": length of... zero id\'s: ",
+       (length(zero_ids[[i]])),
+       " | one id\'s: ",
+       (length(one_ids[[i]]))))
+}
+```
+# Matti has not walked farther than this.
+
+```{r}
+df[zero_ids[[i]], ]
+df[one_ids[[i]], ]
+```
+
+```{r}
+top_features <- rownames(head(varimp_data[[i]]$importance, 10))
+# top_features <- c("behaviour_indoors_nonhouseholders", "behaviour_close_contact", "intention_indoor_meeting")
+```
+
+```{r}
+# df$demographic_gender <- factor(df$demographic_gender)
+# df <- data.frame(apply(df, 2, factor))
+```
+
+```{r}
+# df %<>%
+#        mutate_each_(funs(factor(.)),top_features)
+# # str(df)
+```
+
+```{r}
+x <- df[top_features]
+
+y <- factor(df$behaviour_unmasked_bool)
+
+```
+
+```{r}
+set.seed(2021)
+inTrain <- createDataPartition(y, p = .80, list = FALSE)[,1]
+
+x_train <- x[ inTrain, ]
+x_test  <- x[-inTrain, ]
+
+y_train <- y[ inTrain]
+y_test  <- y[-inTrain]
+
+colnames(x_train)
+```
+
+```{r}
+cl <- makePSOCKcluster(10)
+registerDoParallel(cl)
+
+set.seed(2021)
+
+# Specify 10 fold cross-validation
+ctrl_cv <- trainControl(method = "repeatedcv",
+                        search="grid",
+                        number = 10,
+                        repeats=10,
+                        timingSamps = 5,
+                        # seeds = c(1:101)
+                        )
+# Predict income using decision tree
+dec_mod <- train(x=x_train,
+                 y=y_train,
+                    method = "rpartScore",  
+                    trControl = ctrl_cv,
+                    tuneGrid = expand.grid(
+                      cp = seq(0,1,0.1),
+                      split = c("abs", "quad"),
+                      prune = c("mc", "mr")
+                      )
+
+                 )
+
+stopCluster(cl)
+```
+
+```{r}
+registerDoSEQ()
+```
+
+```{r}
+# Post prediction
+postResample(predict(dec_mod, x_test), y_test)
+```
+
+```{r}
+prediction_tibble <- tibble("target"=y_test,
+       "prediction"=predict(dec_mod, x_test))
+prediction_table <- table(prediction_tibble)
+cfm <- as_tibble(prediction_table)
+
+```
+
+```{r}
+plot_confusion_matrix(cfm, 
+                      target_col = "target", 
+                      prediction_col = "prediction",
+                      counts_col = "n")
+                      
+                      
+```
+
+```{r, fig.height=10, fig.width=15}
+fancyRpartPlot(dec_mod$finalModel)
+```
+
+```{r}
+varImp(dec_mod)
+```
+
+```{r}
+ggplot(data=df, aes(x=id, y=intention_store, color=demographic_gender)) + geom_point()
+```
+
+```{r}
+ggplot(data=df, aes(x=id, y=behaviour_indoors_nonhouseholders, color=demographic_gender)) + geom_point()
+```
+
+```{r}
+dec_mod
+```
+
+```{r}
+dec_mod$bestTune
+dec_mod$finalModel
+```
