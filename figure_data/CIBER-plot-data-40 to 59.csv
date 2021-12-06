@@ -1,6 +1,6 @@
 "mean_ci_lo","mean_point","mean_ci_hi","label","rownr","constant","r_ci_lo","r_point","r_ci_hi","fullLabel"
-0.362459007323731,0.4041928721174,0.44592673691107,"risk_fear_restrictions",27,1,-0.341790087664747,-0.278885995144022,-0.213494053290392,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.362459007323731,0.4041928721174,0.44592673691107,"risk_fear_restrictions",27,1,-0.341790087664747,-0.278885995144022,-0.213494053290392,"Measures taken to prevent the spread [
+Doesn't scare me | Scares me ]"
 0.526697132516628,0.562054507337526,0.597411882158424,"aff_attitude_difficult_breathing",16,1,-0.336210686199305,-0.273062257177924,-0.207469478148211,"When I use a face mask, I feel or would
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
@@ -25,8 +25,8 @@ scare me | Scares me ]"
 0.577685979240886,0.614255765199161,0.650825551157437,"inst_attitude_sense_of_community",5,1,0.292738133356059,0.355043261833754,0.414346270316468,"If or when I use a face mask… [ It
 decreases sense of community | It
 increases sense of community ]"
-0.500269232607501,0.541719077568134,0.583168922528768,"risk_fear_contagion_self",25,1,0.298736327984062,0.360774335834964,0.419776023304837,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.500269232607501,0.541719077568134,0.583168922528768,"risk_fear_contagion_self",25,1,0.298736327984062,0.360774335834964,0.419776023304837,"I would get infected myself .. [
+Doesn't scare me | Scares me ]"
 0.529930256564993,0.573584905660377,0.617239554755762,"inst_attitude_enough_oxygen",6,1,0.299189602411,0.3612072340463,0.420185989677251,"If or when I use a face mask… [ I get
 enough oxygen | I don't get enough
 oxygen ]"
@@ -34,8 +34,8 @@ oxygen ]"
 me | Scares me ]"
 0.554255542641274,0.592243186582809,0.630230830524344,"aff_attitude_calm",13,1,0.325195128370566,0.385999041698646,0.443624402227094,"When I use a face mask, I feel or would
 feel ... [ Very anxious | Very calm ]"
-0.667326301955471,0.705450733752621,0.74357516554977,"risk_fear_contagion_others",26,1,0.328619894770721,0.389257437015138,0.446699070524206,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.667326301955471,0.705450733752621,0.74357516554977,"risk_fear_contagion_others",26,1,0.328619894770721,0.389257437015138,0.446699070524206,"Loved one would get infected... [
+Doesn't scare me | Scares me ]"
 0.704861364057761,0.738574423480084,0.772287482902407,"inst_attitude_protects_self",3,1,0.334466167391347,0.394816200527158,0.451941269210049,"If or when I use a face mask… [ I
 expose myself to coronavirus infection
 | I protect myself from coronavirus

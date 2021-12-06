@@ -1,6 +1,6 @@
 "mean_ci_lo","mean_point","mean_ci_hi","label","rownr","constant","r_ci_lo","r_point","r_ci_hi","fullLabel"
-0.375536074088455,0.401335093896714,0.427134113704972,"risk_fear_restrictions",27,1,-0.324111146476757,-0.286810790834136,-0.24862005177945,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.375536074088455,0.401335093896714,0.427134113704972,"risk_fear_restrictions",27,1,-0.324111146476757,-0.286810790834136,-0.24862005177945,"Measures taken to prevent the spread [
+Doesn't scare me | Scares me ]"
 0.518258548944881,0.54012617370892,0.561993798472959,"aff_attitude_difficult_breathing",16,1,-0.286647702329936,-0.248453330570612,-0.209470425354714,"When I use a face mask, I feel or would
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
@@ -20,8 +20,8 @@ increases sense of community ]"
 0.565914421079569,0.592136150234742,0.618357879389915,"inst_attitude_enough_oxygen",6,1,0.298275320441648,0.335285803208664,0.371289566157608,"If or when I use a face mask… [ I get
 enough oxygen | I don't get enough
 oxygen ]"
-0.697355430158794,0.719923708920188,0.742491987681582,"risk_fear_contagion_others",26,1,0.319931267761213,0.356365817907727,0.391747904767658,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.697355430158794,0.719923708920188,0.742491987681582,"risk_fear_contagion_others",26,1,0.319931267761213,0.356365817907727,0.391747904767658,"Loved one would get infected... [
+Doesn't scare me | Scares me ]"
 0.807650249706834,0.82643779342723,0.845225337147626,"effective_means_distance",19,1,0.322026192192903,0.358403062844842,0.393723216497492,"Keeping a safety distance (2 meters) [
 Ineffective | Effective ]"
 0.410708199145165,0.431044600938967,0.451381002732769,"aff_attitude_comfortable",12,1,0.32362539207821,0.359957998856488,0.395230662254669,"When I use a face mask, I feel or would
@@ -30,8 +30,8 @@ comfortable ]"
 0.484077676653127,0.511370305164319,0.538662933675512,"inst_attitude_no_needless_waste",7,1,0.324571024478899,0.360877362367429,0.396121857557913,"If or when I use a face mask… [ I
 produce unnecessary waste | I do not
 produce unnecessary waste ]"
-0.509793057145672,0.535357981220657,0.560922905295642,"risk_fear_contagion_self",25,1,0.328817586534002,0.365005088650774,0.400122297015193,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.509793057145672,0.535357981220657,0.560922905295642,"risk_fear_contagion_self",25,1,0.328817586534002,0.365005088650774,0.400122297015193,"I would get infected myself .. [
+Doesn't scare me | Scares me ]"
 0.570647837112014,0.59330985915493,0.615971881197846,"aff_attitude_calm",13,1,0.345154531117252,0.380871606820216,0.415487090281338,"When I use a face mask, I feel or would
 feel ... [ Very anxious | Very calm ]"
 0.714129804544162,0.734154929577465,0.754180054610768,"inst_attitude_protects_self",3,1,0.349146445726789,0.384745378036314,0.419235368814238,"If or when I use a face mask… [ I

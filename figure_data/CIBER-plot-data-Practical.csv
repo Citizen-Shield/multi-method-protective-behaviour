@@ -1,6 +1,6 @@
 "mean_ci_lo","mean_point","mean_ci_hi","label","rownr","constant","r_ci_lo","r_point","r_ci_hi","fullLabel"
-0.365171313885437,0.400601585999453,0.436031858113469,"risk_fear_restrictions",27,1,-0.310626715523028,-0.258997087605764,-0.205843722758198,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.365171313885437,0.400601585999453,0.436031858113469,"risk_fear_restrictions",27,1,-0.310626715523028,-0.258997087605764,-0.205843722758198,"Measures taken to prevent the spread [
+Doesn't scare me | Scares me ]"
 0.527048230883826,0.557150669948045,0.587253109012264,"aff_attitude_difficult_breathing",16,1,-0.304148987436378,-0.252310983096881,-0.198983154169226,"When I use a face mask, I feel or would
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
@@ -23,10 +23,10 @@ increases sense of community ]"
 0.3957244879541,0.424801750068362,0.453879012182624,"aff_attitude_comfortable",12,1,0.310884685124583,0.360734715892714,0.408605502622701,"When I use a face mask, I feel or would
 feel ... [ Very uncomfortable | Very
 comfortable ]"
-0.687921471001695,0.719168717528028,0.750415964054362,"risk_fear_contagion_others",26,1,0.314617940075151,0.364328867413079,0.412046802859906,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
-0.505453368534783,0.541290675417008,0.577127982299234,"risk_fear_contagion_self",25,1,0.316638027920476,0.366273068250041,0.413907753958608,"Spread of coronavirus… [ Doesn't scare
-me | Scares me ]"
+0.687921471001695,0.719168717528028,0.750415964054362,"risk_fear_contagion_others",26,1,0.314617940075151,0.364328867413079,0.412046802859906,"Loved one would get infected... [
+Doesn't scare me | Scares me ]"
+0.505453368534783,0.541290675417008,0.577127982299234,"risk_fear_contagion_self",25,1,0.316638027920476,0.366273068250041,0.413907753958608,"I would get infected myself .. [
+Doesn't scare me | Scares me ]"
 0.539607834104124,0.570959803117309,0.602311772130495,"aff_attitude_calm",13,1,0.318930791667335,0.368479176651659,0.416018915772511,"When I use a face mask, I feel or would
 feel ... [ Very anxious | Very calm ]"
 0.703649901011592,0.731884057971015,0.760118214930437,"inst_attitude_protects_self",3,1,0.328620550269386,0.377796550354049,0.424929638833491,"If or when I use a face mask… [ I
