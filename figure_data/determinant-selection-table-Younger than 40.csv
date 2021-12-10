@@ -1,12 +1,12 @@
 "determinant","lower","current","upper","weight","p_delta"
-"If or when I use a face mask… [ I produce
+"If or when I use a face maskï¿½ [ I produce
 unnecessary waste | I do not produce
 unnecessary waste ]",0,0.404539385847797,1,0.380412112080677,0.226520429890497
 "When I use a face mask, I feel or would
 feel ... [ Very uncomfortable | Very comfortable ]",0,0.425678682688028,1,0.361324458089238,0.207516338746845
 "Perceived risk severity coronavirus
 infection [ Doesn't scare me | Scares me ]",0,0.402091677792612,1,0.333535301486937,0.19942353250899
-"Spread of coronavirus… [ Doesn't scare me | Scares me ]",0,0.533155318202047,1,0.407623705149573,0.190296958923855
+"Spread of coronavirusï¿½ [ Doesn't scare me | Scares me ]",0,0.533155318202047,1,0.407623705149573,0.190296958923855
 "I would get infected myself .. [ Doesn't scare me | Scares me ]",0,0.44681797952826,1,0.341693147804467,0.189018505883824
 "When I use a face mask, I feel or would
 feel ... [ Very anxious | Very calm ]",0,0.559190031152648,1,0.396214648429802,0.174655366831206
@@ -20,12 +20,12 @@ feel ... [ Very insecure | Very safe ]",0,0.623275478415665,1,0.420832361083647,
 "Is putting on a mask automatic for you? [ 1 Not at all
 automatic | 7 Fully automatic ]",0,0.724744103248776,1,0.549344440517423,0.151210296599923
 "Using a face mask [ Ineffective | Effective ]",0,0.697819314641745,1,0.494725556506416,0.149496507729353
-"If or when I use a face mask… [ I get enough oxygen | I don't get enough
+"If or when I use a face maskï¿½ [ I get enough oxygen | I don't get enough
 oxygen ]",0,0.580551846906987,1,0.351343314482076,0.147370304361085
-"If or when I use a face mask… [ It decreases sense
+"If or when I use a face maskï¿½ [ It decreases sense
 of community | It increases sense
 of community ]",0,0.612372051624388,1,0.346096196673101,0.134156558656997
-"If or when I use a face mask… [ I expose myself to
+"If or when I use a face maskï¿½ [ I expose myself to
 coronavirus
 infection | I protect myself
 from coronavirus
@@ -34,11 +34,11 @@ infection ]",0,0.669559412550067,1,0.350718675452194,0.115891685146085
 "When I use a face mask, I feel or would
 feel ... [ Very irresponsible | Very responsible ]",0,0.769470404984424,1,0.471425984116974,0.108677641198305
 "In the indoors spaces I visit, people
-on the site think I should… [ Not to use a mask | Use a mask ]",0,0.747886070315977,1,0.42950190901437,0.108283414088403
+on the site think I shouldï¿½ [ Not to use a mask | Use a mask ]",0,0.747886070315977,1,0.42950190901437,0.108283414088403
 "Perceived risk coronavirus infection [ Doesn't scare me | Scares me ]",0,0.203890902155255,0.857142857142857,0.163900701894099,0.107068453936161
 "My family and friends think I should .. [ Not to use a mask | Use a mask ]",0,0.793947485536271,1,0.483745172579684,0.0996769091697347
 "Keeping a safety distance (2 meters) [ Ineffective | Effective ]",0,0.769247886070316,1,0.350967677034024,0.0809865333965916
-"If or when I use a face mask… [ I expose others to
+"If or when I use a face maskï¿½ [ I expose others to
 coronavirus
 infection | I protect others
 from coronavirus

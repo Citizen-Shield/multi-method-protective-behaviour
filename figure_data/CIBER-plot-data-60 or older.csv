@@ -9,7 +9,7 @@ Doesn't scare me | Scares me ]"
 0.77105942171788,0.806089743589744,0.841120065461607,"effective_means_ventilation",20,1,0.144034365127928,0.214452853804165,0.282710385167853,"Ventilation [ Ineffective | Effective ]"
 0.86446903522023,0.893086080586081,0.921703125951931,"effective_means_handwashing",17,1,0.167055776303581,0.236843729921524,0.304270254929457,"Hand washing and use of gloves [
 Ineffective | Effective ]"
-0.602514912962177,0.649725274725275,0.696935636488372,"inst_attitude_no_needless_waste",7,1,0.178999928883712,0.248431606874283,0.315401003772961,"If or when I use a face mask… [ I
+0.602514912962177,0.649725274725275,0.696935636488372,"inst_attitude_no_needless_waste",7,1,0.178999928883712,0.248431606874283,0.315401003772961,"If or when I use a face maskï¿½ [ I
 produce unnecessary waste | I do not
 produce unnecessary waste ]"
 0.709746353856611,0.748855311355311,0.787964268854011,"risk_fear_contagion_others",26,1,0.188622856650367,0.257753064847112,0.324341387583154,"Loved one would get infected... [
@@ -21,17 +21,17 @@ Ineffective | Effective ]"
 0.385004458330807,0.421899529042386,0.458794599753965,"risk_contagion_absent_protection",22,1,0.206436608742757,0.274974849661715,0.340827888034565,"Perceived risk coronavirus infection
 with no protective behaviours [ Doesn't
 scare me | Scares me ]"
-0.578243837907614,0.624313186813187,0.670382535718759,"inst_attitude_enough_oxygen",6,1,0.215203542640723,0.283434332331707,0.348911385862305,"If or when I use a face mask… [ I get
+0.578243837907614,0.624313186813187,0.670382535718759,"inst_attitude_enough_oxygen",6,1,0.215203542640723,0.283434332331707,0.348911385862305,"If or when I use a face maskï¿½ [ I get
 enough oxygen | I don't get enough
 oxygen ]"
-0.762167197178969,0.795787545787546,0.829407894396123,"inst_attitude_protects_self",3,1,0.222823367170225,0.29077831875928,0.355921074360423,"If or when I use a face mask… [ I
+0.762167197178969,0.795787545787546,0.829407894396123,"inst_attitude_protects_self",3,1,0.222823367170225,0.29077831875928,0.355921074360423,"If or when I use a face maskï¿½ [ I
 expose myself to coronavirus infection
 | I protect myself from coronavirus
 infection ]"
-0.598741475612585,0.637591575091575,0.676441674570565,"inst_attitude_sense_of_community",5,1,0.227086149668976,0.294883298505323,0.359836004445721,"If or when I use a face mask… [ It
+0.598741475612585,0.637591575091575,0.676441674570565,"inst_attitude_sense_of_community",5,1,0.227086149668976,0.294883298505323,0.359836004445721,"If or when I use a face maskï¿½ [ It
 decreases sense of community | It
 increases sense of community ]"
-0.59431567842994,0.635531135531135,0.676746592632331,"risk_fear_spread",24,1,0.230933879077813,0.298586442280391,0.36336574130025,"Spread of coronavirus… [ Doesn't scare
+0.59431567842994,0.635531135531135,0.676746592632331,"risk_fear_spread",24,1,0.230933879077813,0.298586442280391,0.36336574130025,"Spread of coronavirusï¿½ [ Doesn't scare
 me | Scares me ]"
 0.688726596562933,0.723901098901099,0.759075601239265,"risk_severity",23,1,0.237192609679361,0.30460564083056,0.36909911375657,"Perceived risk severity coronavirus
 infection [ Doesn't scare me | Scares
@@ -43,7 +43,7 @@ comfortable ]"
 feel ... [ Very anxious | Very calm ]"
 0.679865743252009,0.711309523809524,0.742753304367038,"aff_attitude_safe",14,1,0.288796311441598,0.354030009849149,0.415991626242665,"When I use a face mask, I feel or would
 feel ... [ Very insecure | Very safe ]"
-0.851327769768854,0.878663003663004,0.905998237557153,"inst_attitude_protects_others",4,1,0.353377651213256,0.415374824469332,0.47373920235258,"If or when I use a face mask… [ I
+0.851327769768854,0.878663003663004,0.905998237557153,"inst_attitude_protects_others",4,1,0.353377651213256,0.415374824469332,0.47373920235258,"If or when I use a face maskï¿½ [ I
 expose others to coronavirus infection
 | I protect others from coronavirus
 infection ]"
@@ -65,5 +65,5 @@ Effective ]"
 you? [ 1 Not at all automatic | 7 Fully
 automatic ]"
 0.834530012974008,0.865384615384615,0.896239217795223,"norms_people_present_indoors",11,1,0.409398230566863,0.468135055071097,0.523007343883896,"In the indoors spaces I visit, people
-on the site think I should… [ Not to
+on the site think I shouldï¿½ [ Not to
 use a mask | Use a mask ]"
