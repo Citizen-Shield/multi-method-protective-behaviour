@@ -5,13 +5,13 @@ Doesn't scare me | Scares me ]"
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
 0.161171327593617,0.18129614438064,0.201420961167662,"risk_likely_contagion",21,1,0.0470086452840887,0.102883805923186,0.158117138657947,"Perceived risk coronavirus infection [
-Doesn't scare me | Scares me ]"
+Very unlikely | Very likely ]"
 0.83604327083167,0.860404703308723,0.884766135785776,"effective_means_handwashing",17,1,0.18993600222523,0.243486107966551,0.295591799230429,"Hand washing and use of gloves [
 Ineffective | Effective ]"
 0.713283549466599,0.742685261143013,0.772086972819427,"effective_means_ventilation",20,1,0.200844427538639,0.254125427817819,0.305907357977974,"Ventilation [ Ineffective | Effective ]"
 0.3899349839916,0.418492909879292,0.447050835766984,"risk_contagion_absent_protection",22,1,0.288161126238755,0.338825871256783,0.38759891594044,"Perceived risk coronavirus infection
-with no protective behaviours [ Doesn't
-scare me | Scares me ]"
+with no protective behaviours [ Very
+unlikely | Very likely ]"
 0.535721721973371,0.572190319934372,0.608658917895374,"inst_attitude_enough_oxygen",6,1,0.292109338954089,0.342636475698152,0.391256233322553,"If or when I use a face mask… [ I get
 enough oxygen | I don't get enough
 oxygen ]"
@@ -39,8 +39,8 @@ produce unnecessary waste ]"
 0.790742762884026,0.817610062893082,0.844477362902138,"effective_means_distance",19,1,0.334205378952831,0.383162229012957,0.430056994641183,"Keeping a safety distance (2 meters) [
 Ineffective | Effective ]"
 0.548315789360745,0.580803937653815,0.613292085946884,"risk_severity",23,1,0.34764649955222,0.396062385934474,0.442371808780611,"Perceived risk severity coronavirus
-infection [ Doesn't scare me | Scares
-me ]"
+infection [ Not serious at all | Very
+serious ]"
 0.547936916710575,0.581487558107739,0.615038199504902,"risk_fear_spread",24,1,0.349078037528056,0.397435183677563,0.4436812887318,"Spread of coronavirus… [ Doesn't scare
 me | Scares me ]"
 0.636097753817924,0.661881323489199,0.687664893160473,"aff_attitude_safe",14,1,0.350418561966759,0.398720506217512,0.444907149140791,"When I use a face mask, I feel or would

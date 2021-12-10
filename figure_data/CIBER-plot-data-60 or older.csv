@@ -5,7 +5,7 @@ difficult to breathe ]"
 0.296344417362249,0.340659340659341,0.384974263956432,"risk_fear_restrictions",27,1,-0.274152349096473,-0.205584801824755,-0.134937609516463,"Measures taken to prevent the spread [
 Doesn't scare me | Scares me ]"
 0.133262068244683,0.159340659340659,0.185419250436636,"risk_likely_contagion",21,1,0.0174015129092852,0.0899507190366385,0.161557708155653,"Perceived risk coronavirus infection [
-Doesn't scare me | Scares me ]"
+Very unlikely | Very likely ]"
 0.77105942171788,0.806089743589744,0.841120065461607,"effective_means_ventilation",20,1,0.144034365127928,0.214452853804165,0.282710385167853,"Ventilation [ Ineffective | Effective ]"
 0.86446903522023,0.893086080586081,0.921703125951931,"effective_means_handwashing",17,1,0.167055776303581,0.236843729921524,0.304270254929457,"Hand washing and use of gloves [
 Ineffective | Effective ]"
@@ -19,8 +19,8 @@ Doesn't scare me | Scares me ]"
 0.874106426269804,0.898809523809524,0.923512621349244,"effective_means_distance",19,1,0.195939300971092,0.264831696569982,0.33112269714839,"Keeping a safety distance (2 meters) [
 Ineffective | Effective ]"
 0.385004458330807,0.421899529042386,0.458794599753965,"risk_contagion_absent_protection",22,1,0.206436608742757,0.274974849661715,0.340827888034565,"Perceived risk coronavirus infection
-with no protective behaviours [ Doesn't
-scare me | Scares me ]"
+with no protective behaviours [ Very
+unlikely | Very likely ]"
 0.578243837907614,0.624313186813187,0.670382535718759,"inst_attitude_enough_oxygen",6,1,0.215203542640723,0.283434332331707,0.348911385862305,"If or when I use a face mask… [ I get
 enough oxygen | I don't get enough
 oxygen ]"
@@ -34,8 +34,8 @@ increases sense of community ]"
 0.59431567842994,0.635531135531135,0.676746592632331,"risk_fear_spread",24,1,0.230933879077813,0.298586442280391,0.36336574130025,"Spread of coronavirus… [ Doesn't scare
 me | Scares me ]"
 0.688726596562933,0.723901098901099,0.759075601239265,"risk_severity",23,1,0.237192609679361,0.30460564083056,0.36909911375657,"Perceived risk severity coronavirus
-infection [ Doesn't scare me | Scares
-me ]"
+infection [ Not serious at all | Very
+serious ]"
 0.423806196050474,0.459935897435897,0.496065598821321,"aff_attitude_comfortable",12,1,0.251973608857014,0.318799604800389,0.382599659030008,"When I use a face mask, I feel or would
 feel ... [ Very uncomfortable | Very
 comfortable ]"

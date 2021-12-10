@@ -7,13 +7,13 @@ Doesn't scare me | Scares me ]"
 0.784810484058411,0.819759679572764,0.854708875087117,"effective_means_handwashing",17,1,0.0383669560887311,0.10970190368824,0.179924400021774,"Hand washing and use of gloves [
 Ineffective | Effective ]"
 0.179205528497482,0.203890902155255,0.228576275813027,"risk_likely_contagion",21,1,0.0933604110136215,0.163900701894099,0.232803751405493,"Perceived risk coronavirus infection [
-Doesn't scare me | Scares me ]"
+Very unlikely | Very likely ]"
 0.677960440688326,0.713395638629283,0.748830836570241,"effective_means_ventilation",20,1,0.129113641783347,0.198910331847058,0.266745868370653,"Ventilation [ Ineffective | Effective ]"
 0.898641380169413,0.924121050289275,0.949600720409136,"norms_officials",10,1,0.248542387413636,0.314577883860784,0.377702720418323,"The authorities think I should .. [ Not
 to use a mask | Use a mask ]"
 0.365764229765489,0.402091677792612,0.438419125819736,"risk_severity",23,1,0.268309640799882,0.333535301486937,0.395716786499161,"Perceived risk severity coronavirus
-infection [ Doesn't scare me | Scares
-me ]"
+infection [ Not serious at all | Very
+serious ]"
 0.401569894503686,0.44681797952826,0.492066064552834,"risk_fear_contagion_self",25,1,0.27683291716227,0.341693147804467,0.403453987442053,"I would get infected myself .. [
 Doesn't scare me | Scares me ]"
 0.574782292473741,0.612372051624388,0.649961810775035,"inst_attitude_sense_of_community",5,1,0.281437444893496,0.346096196673101,0.407626333894019,"If or when I use a face mask… [ It
@@ -37,8 +37,8 @@ comfortable ]"
 produce unnecessary waste | I do not
 produce unnecessary waste ]"
 0.38092361897516,0.416173946214,0.45142427345284,"risk_contagion_absent_protection",22,1,0.322652716742732,0.385381583315933,0.444739942373872,"Perceived risk coronavirus infection
-with no protective behaviours [ Doesn't
-scare me | Scares me ]"
+with no protective behaviours [ Very
+unlikely | Very likely ]"
 0.66694986787504,0.707165109034268,0.747380350193496,"risk_fear_contagion_others",26,1,0.330892812143623,0.393208658425084,0.452110048330156,"Loved one would get infected... [
 Doesn't scare me | Scares me ]"
 0.520164282894084,0.559190031152648,0.598215779411212,"aff_attitude_calm",13,1,0.334059950301257,0.396214648429802,0.454938403270746,"When I use a face mask, I feel or would

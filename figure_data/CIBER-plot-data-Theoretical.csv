@@ -5,7 +5,7 @@ Doesn't scare me | Scares me ]"
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
 0.172362631229928,0.193867860534527,0.215373089839127,"risk_likely_contagion",21,1,-0.000984183027161843,0.0594314969936551,0.119414898044219,"Perceived risk coronavirus infection [
-Doesn't scare me | Scares me ]"
+Very unlikely | Very likely ]"
 0.812762961426435,0.840614118391896,0.868465275357357,"effective_means_handwashing",17,1,0.0783206346759791,0.138079455719643,0.196849546945286,"Hand washing and use of gloves [
 Ineffective | Effective ]"
 0.739228188383914,0.768122823678379,0.797017458972844,"effective_means_ventilation",20,1,0.156348319043238,0.214732246915195,0.271620809785023,"Ventilation [ Ineffective | Effective ]"
@@ -15,8 +15,8 @@ to use a mask | Use a mask ]"
 decreases sense of community | It
 increases sense of community ]"
 0.395631773678486,0.424365757699091,0.453099741719697,"risk_contagion_absent_protection",22,1,0.251124863575377,0.306881316001868,0.360608020871067,"Perceived risk coronavirus infection
-with no protective behaviours [ Doesn't
-scare me | Scares me ]"
+with no protective behaviours [ Very
+unlikely | Very likely ]"
 0.810589464062015,0.836657169990503,0.862724875918991,"effective_means_distance",19,1,0.26539567251907,0.320666533222714,0.373836658493982,"Keeping a safety distance (2 meters) [
 Ineffective | Effective ]"
 0.577583157953067,0.61522633744856,0.652869516944052,"inst_attitude_enough_oxygen",6,1,0.26749293116374,0.322690457199409,0.37577704686316,"If or when I use a face mask… [ I get
@@ -37,8 +37,8 @@ me | Scares me ]"
 0.874786320331559,0.898860398860399,0.922934477389239,"norms_risk_groups",9,1,0.327516195345364,0.380401729750607,0.430911156445415,"People at risk think I should .. [ Not
 to use a mask | Use a mask ]"
 0.516132205955854,0.550490661601773,0.584849117247692,"risk_severity",23,1,0.333425465643277,0.38606120134505,0.436297670642298,"Perceived risk severity coronavirus
-infection [ Doesn't scare me | Scares
-me ]"
+infection [ Not serious at all | Very
+serious ]"
 0.708397787095271,0.736783792339348,0.765169797583425,"inst_attitude_protects_self",3,1,0.34209297972133,0.394355157219172,0.444185108033545,"If or when I use a face mask… [ I
 expose myself to coronavirus infection
 | I protect myself from coronavirus

@@ -5,15 +5,15 @@ Doesn't scare me | Scares me ]"
 feel ... [ Very easy to breathe | Very
 difficult to breathe ]"
 0.172448605713511,0.187122736418511,0.201796867123511,"risk_likely_contagion",21,1,0.0440333016166563,0.0850024807509332,0.125686236698085,"Perceived risk coronavirus infection [
-Doesn't scare me | Scares me ]"
+Very unlikely | Very likely ]"
 0.832881547644175,0.851232394366197,0.869583241088219,"effective_means_handwashing",17,1,0.153572427532449,0.193473669308498,0.232744995360489,"Hand washing and use of gloves [
 Ineffective | Effective ]"
 0.733796860032426,0.754474765258216,0.775152670484006,"effective_means_ventilation",20,1,0.199934591155739,0.239091894695795,0.277486690485076,"Ventilation [ Ineffective | Effective ]"
 0.902993940358607,0.917620305164319,0.932246669970032,"norms_officials",10,1,0.285853942568003,0.323178020601546,0.359523030402403,"The authorities think I should .. [ Not
 to use a mask | Use a mask ]"
 0.400952811204091,0.421214788732394,0.441476766260698,"risk_contagion_absent_protection",22,1,0.288282980340526,0.325546695409499,0.361825856006454,"Perceived risk coronavirus infection
-with no protective behaviours [ Doesn't
-scare me | Scares me ]"
+with no protective behaviours [ Very
+unlikely | Very likely ]"
 0.599447433397772,0.621112089201878,0.642776745005984,"inst_attitude_sense_of_community",5,1,0.292983023867512,0.330128612519272,0.366279139548282,"If or when I use a face mask… [ It
 decreases sense of community | It
 increases sense of community ]"
@@ -41,8 +41,8 @@ infection ]"
 0.557698384764606,0.581572769953052,0.605447155141497,"risk_fear_spread",24,1,0.352958738875041,0.388443673513976,0.422812759455635,"Spread of coronavirus… [ Doesn't scare
 me | Scares me ]"
 0.543159794422328,0.566754694835681,0.590349595249034,"risk_severity",23,1,0.353303506516762,0.388778075332089,0.423136176195912,"Perceived risk severity coronavirus
-infection [ Doesn't scare me | Scares
-me ]"
+infection [ Not serious at all | Very
+serious ]"
 0.872602172089644,0.889451291079812,0.906300410069981,"norms_risk_groups",9,1,0.362573251264472,0.397765612227609,0.431825194554817,"People at risk think I should .. [ Not
 to use a mask | Use a mask ]"
 0.642076850678059,0.66006455399061,0.678052257303162,"aff_attitude_safe",14,1,0.378788948404048,0.413471414543766,0.446994171820984,"When I use a face mask, I feel or would
