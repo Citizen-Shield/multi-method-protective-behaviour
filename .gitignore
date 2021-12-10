@@ -9,3 +9,4 @@ catboost_info/
 data/
 .ipynb_checkpoints/
 .DS_Store
+.idea/
