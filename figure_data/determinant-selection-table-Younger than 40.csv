@@ -17,11 +17,16 @@ you? [ 1 Not at all
 automatic | 7 Fully automatic ]",0,0.686248331108144,1,0.521378073738986,0.163583240759228
 "When I use a face mask, I feel or would
 feel ... [ Very insecure | Very safe ]",0,0.623275478415665,1,0.420832361083647,0.158537869896443
+"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.457276368491322,1,-0.283650514182255,-0.153943837136297
 "Is putting on a mask automatic for you? [ 1 Not at all
 automatic | 7 Fully automatic ]",0,0.724744103248776,1,0.549344440517423,0.151210296599923
 "Using a face mask [ Ineffective | Effective ]",0,0.697819314641745,1,0.494725556506416,0.149496507729353
 "If or when I use a face mask… [ I get enough oxygen | I don't get enough
 oxygen ]",0,0.580551846906987,1,0.351343314482076,0.147370304361085
+"When I use a face mask, I feel or would
+feel ... [ Very easy to
+breathe | Very difficult to
+breathe ]",0,0.522919448153093,1,-0.292858960356242,-0.139717314420067
 "If or when I use a face mask… [ It decreases sense
 of community | It increases sense
 of community ]",0,0.612372051624388,1,0.346096196673101,0.134156558656997
@@ -47,8 +52,3 @@ infection ]",0,0.850244770805519,1,0.532824178738879,0.0797932070074022
 "People at risk think I should .. [ Not to use a mask | Use a mask ]",0,0.866711170449488,1,0.358400880968597,0.0477708339341766
 "The authorities think I should .. [ Not to use a mask | Use a mask ]",0,0.924121050289275,1,0.314577883860784,0.0238698394295788
 "Hand washing and use of gloves [ Ineffective | Effective ]",0,0.819759679572764,1,0.10970190368824,0.0197727062722462
-"When I use a face mask, I feel or would
-feel ... [ Very easy to
-breathe | Very difficult to
-breathe ]",0,0.522919448153093,1,-0.292858960356242,-0.139717314420067
-"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.457276368491322,1,-0.283650514182255,-0.153943837136297
