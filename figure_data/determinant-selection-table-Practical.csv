@@ -12,7 +12,6 @@ unnecessary waste ]",0,0.520371889526935,1,0.378265800115571,0.181426910966013
 infection [ Not serious at all | Very serious ]",0,0.580803937653815,1,0.396062385934474,0.166027792627167
 "When I use a face mask, I feel or would
 feel ... [ Very anxious | Very calm ]",0,0.570959803117309,1,0.368479176651659,0.158092378497799
-"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.400601585999453,1,-0.258997087605764,-0.155242443541656
 "If or when I use a face mask… [ I get enough oxygen | I don't get enough
 oxygen ]",0,0.572190319934372,1,0.342636475698152,0.146583201047241
 "When I use a face mask, I feel or would
@@ -26,10 +25,6 @@ automatic | 7 Fully automatic ]",0,0.753076292042658,1,0.527071004295951,0.13014
 "Is putting on a mask automatic for you? [ 1 Not at all
 automatic | 7 Fully automatic ]",0,0.772354388843314,1,0.526486931350928,0.11985243925339
 "Using a face mask [ Ineffective | Effective ]",0,0.772764561115669,1,0.512686491962599,0.116500540011189
-"When I use a face mask, I feel or would
-feel ... [ Very easy to
-breathe | Very difficult to
-breathe ]",0,0.557150669948045,1,-0.252310983096881,-0.111735749829204
 "Loved one would get infected... [ Doesn't scare me | Scares me ]",0,0.719168717528028,1,0.364328867413079,0.102314943077176
 "If or when I use a face mask… [ I expose myself to
 coronavirus
@@ -52,3 +47,8 @@ infection ]",0,0.852748154224774,1,0.477758440457092,0.070350812192
 "People at risk think I should .. [ Not to use a mask | Use a mask ]",0,0.881323489198797,1,0.409294094780152,0.0485735950600454
 "Hand washing and use of gloves [ Ineffective | Effective ]",0,0.860404703308723,1,0.243486107966551,0.033989515481795
 "The authorities think I should .. [ Not to use a mask | Use a mask ]",0,0.911676237353022,1,0.345713473333463,0.0305347147625673
+"When I use a face mask, I feel or would
+feel ... [ Very easy to
+breathe | Very difficult to
+breathe ]",0,0.557150669948045,1,-0.252310983096881,-0.111735749829204
+"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.400601585999453,1,-0.258997087605764,-0.155242443541656

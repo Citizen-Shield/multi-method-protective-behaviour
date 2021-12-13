@@ -6,7 +6,6 @@ with no protective behaviours [ Very unlikely | Very likely ]",0,0.4212147887323
 "If or when I use a face mask… [ I produce
 unnecessary waste | I do not produce
 unnecessary waste ]",0,0.511370305164319,1,0.360877362367429,0.176335395446702
-"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.401335093896714,1,-0.286810790834136,-0.171703555164128
 "I would get infected myself .. [ Doesn't scare me | Scares me ]",0,0.535357981220657,1,0.365005088650774,0.169596701255429
 "Perceived risk severity coronavirus
 infection [ Not serious at all | Very serious ]",0,0.566754694835681,1,0.388778075332089,0.168436275888448
@@ -26,10 +25,6 @@ automatic | 7 Fully automatic ]",0,0.760636737089202,1,0.520920633837501,0.12468
 "Using a face mask [ Ineffective | Effective ]",0,0.775528169014085,1,0.519747365705107,0.116668642829932
 "Is putting on a mask automatic for you? [ 1 Not at all
 automatic | 7 Fully automatic ]",0,0.781103286384977,1,0.528436883197196,0.115673097084832
-"When I use a face mask, I feel or would
-feel ... [ Very easy to
-breathe | Very difficult to
-breathe ]",0,0.54012617370892,1,-0.248453330570612,-0.11425718378427
 "If or when I use a face mask… [ I expose myself to
 coronavirus
 infection | I protect myself
@@ -52,3 +47,8 @@ infection ]",0,0.86274941314554,1,0.477245917982385,0.0655022823169779
 "People at risk think I should .. [ Not to use a mask | Use a mask ]",0,0.889451291079812,1,0.397765612227609,0.0439724748846102
 "Hand washing and use of gloves [ Ineffective | Effective ]",0,0.851232394366197,1,0.193473669308498,0.0287826145362114
 "The authorities think I should .. [ Not to use a mask | Use a mask ]",0,0.917620305164319,1,0.323178020601546,0.0266233067147547
+"When I use a face mask, I feel or would
+feel ... [ Very easy to
+breathe | Very difficult to
+breathe ]",0,0.54012617370892,1,-0.248453330570612,-0.11425718378427
+"Measures taken to prevent the spread [ Doesn't scare me | Scares me ]",0,0.401335093896714,1,-0.286810790834136,-0.171703555164128

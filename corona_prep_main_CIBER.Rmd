@@ -650,7 +650,7 @@ Note: until we standardize the scales, these are incomparable, as they use the '
 
 ## Full sample
 
-```{r, potential-for-change-index}
+```{r, potential-for-change-index, results='asis'}
 
 df_standardized <- df;
 
@@ -683,7 +683,12 @@ dstList$fullSample <-
     sortBy = 6
   );
 
-print(dstList$fullSample);
+print(
+  behaviorchange:::knit_print.determinantSelectionTable(
+    dstList[['fullSample']],
+    render_preview = FALSE
+  )
+);
 
 ```
 
