@@ -108,6 +108,7 @@ questionLabels_varNameCol <- "New variable name";
 questionLabels_leftAnchorCol <- "English lo-anchor";
 questionLabels_rightAnchorCol <- "English hi-anchor";
 questionLabels_labelCol <- "Label short"; # "Label";
+questionLabels_labelCol <- "Item english translation"; # "Label";
 
 ```
 
@@ -419,7 +420,7 @@ rightAnchors <-
 ### Wrap vectors with labels
 ###-----------------------------------------------------------------------------
 
-questionLabel_maxWidth <- 40;
+questionLabel_maxWidth <- 60;
 anchors_maxWidth <- 20;
 
 wrapVector <- function(x, width) {
@@ -551,7 +552,8 @@ CIBERplot_fullSample_selection <-
     rightAnchors = rightAnchors_wrapped[selectedDeterminants],
     jitterWidth = ciberJitterWidth,
     drawPlot = FALSE,
-    returnPlotOnly = FALSE
+    returnPlotOnly = FALSE,
+    xbreaks = c(0, .2, .4, .6, .8, 1)
   );
 
 ufs::knitAndSave(
