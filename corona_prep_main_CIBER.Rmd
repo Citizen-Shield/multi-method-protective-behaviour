@@ -1,6 +1,6 @@
 ---
 title: "Multi Method approaches applied to COVID-19 protective behavior"
-author: "Kaisa Sauro, James Twose, Gjalt-Jorn Peters, Matti Heino & Nelli Hankonen"
+author: "Kaisa Saurio, James Twose, Gjalt-Jorn Peters, Matti Heino & Nelli Hankonen"
 date: "`r format(Sys.time(), '%Y-%m-%d at %H:%M:%S %Z (UTC%z)')`"
 output:
   html_document:
