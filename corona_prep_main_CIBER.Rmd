@@ -108,7 +108,7 @@ questionLabels_varNameCol <- "New variable name";
 questionLabels_leftAnchorCol <- "English lo-anchor";
 questionLabels_rightAnchorCol <- "English hi-anchor";
 questionLabels_labelCol <- "Label short"; # "Label";
-questionLabels_labelCol <- "Item english translation"; # "Label";
+#questionLabels_labelCol <- "Item english translation"; # "Label";
 
 ```
 
