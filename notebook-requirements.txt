@@ -1,13 +1,13 @@
 catboost==1.0.6
 jmspack==0.1.1
 matplotlib==3.5.1
-numpy==1.21.5
+numpy==1.23.0
 pandas==1.4.2
 pingouin==0.5.1
 seaborn==0.11.2
 session_info==1.0.0
 shap==0.39.0
-sklearn==1.0.2
+sklearn==1.2.2
 statsmodels==0.13.2
 IPython==8.2.0
 jupyter_client==7.1.2
