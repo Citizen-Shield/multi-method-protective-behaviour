@@ -89,7 +89,8 @@ basePath <- here::here();
 ### NOTE: until we add in the data, the repo isn't portable anyway,
 ###       so we might as well get the existing data from the old repo.
 
-dataPath <- normalizePath(file.path(basePath, "..", "coronapreppers", "data"));
+# dataPath <- normalizePath(file.path(basePath, "..", "coronapreppers", "data"));
+dataPath <- normalizePath(file.path(basePath, "data"));
 
 figureDataPath <- file.path(basePath, "figure_data");
 metadataPath <- file.path(basePath, "metadata");
@@ -964,4 +965,8 @@ for (i in names(CIBERplots)) {
 
 ```{r, session-info}
 utils::sessionInfo();
+```
+
+```{r}
+write.csv(df_standardized, "figure_data/ciber_data_standardized.csv")
 ```
