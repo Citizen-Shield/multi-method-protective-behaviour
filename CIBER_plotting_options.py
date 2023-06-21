@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+plt.style.use("jms_style_sheet")
+
 # %%
 ciber_df = pd.read_csv("figure_data/CIBER-plot-data-fullSample.csv").assign(
     **{"short_fullLabel": lambda d: d["fullLabel"].str.split("[").str[0]}
@@ -60,8 +62,8 @@ _ = r_ax.set_yticks([])
 _ = r_ax.set_ylabel("")
 
 # %%
-fig.savefig("figure/CIBER_plotting_options.png", dpi=300, bbox_inches="tight")
-
+# fig.savefig("figure/CIBER_plotting_options.png", dpi=300, bbox_inches="tight")
+_ = fig.savefig('figure/CIBER_plotting_options.eps', format='eps', dpi=1000, bbox_inches='tight')
 # %%
 # Option 2: Density plot of CIBER scores
 # plot_df = df[det_columns].melt()
